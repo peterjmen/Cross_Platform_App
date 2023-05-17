@@ -1,0 +1,7 @@
+{
+    "extends": ["apteryx/common", "apteryx/prettier"],
+    "ignorePatterns": ["node_modules"],
+    "rules": {
+        "jsdoc/newline-after-description": "off"
+    }
+}
