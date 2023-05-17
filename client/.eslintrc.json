@@ -1,0 +1,4 @@
+{
+    "extends": ["apteryx/browser", "apteryx/react", "../.eslintrc.json"],
+    "parserOptions": { "sourceType": "module" }
+}
