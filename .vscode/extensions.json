@@ -2,6 +2,7 @@
     "recommendations": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "wayou.vscode-todo-highlight"
+        "wayou.vscode-todo-highlight",
+        "bradlc.vscode-tailwindcss"
     ]
 }
