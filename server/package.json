@@ -3,8 +3,6 @@
     "scripts": {
         "build": "echo \"Server does not need to be built\" && exit 0",
         "dev": "nodemon src/index.js",
-        "format": "prettier --write src/**/*.js && npm run lint -- --fix",
-        "lint": "eslint --ext .js src",
         "start": "node src/index.js"
     },
     "dependencies": {
