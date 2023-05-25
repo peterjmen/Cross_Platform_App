@@ -40,5 +40,9 @@
         "prettier": "^2.8.8",
         "prettier-config-apteryx": "^2.0.3"
     },
-    "prettier": "prettier-config-apteryx"
+    "prettier": "prettier-config-apteryx",
+    "dependencies": {
+        "bootstrap": "^5.2.3",
+        "react-router-dom": "^6.11.2"
+    }
 }
