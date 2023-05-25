@@ -9,6 +9,7 @@ class Database {
     /**
      * The database connection.
      * @see {@link https://mongoosejs.com/docs/api/connection.html}
+     * @type {import('mongoose').Connection}
      */
     connection;
 
@@ -17,10 +18,8 @@ class Database {
      */
     async connect() {
         const uri = await this.generateDatabaseUri();
-        this.connection = mongoose.createConnection(uri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        const result = await mongoose.connect(uri);
+        this.connection = result.connection;
         console.info('Connected to database');
     }
 
