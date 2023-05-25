@@ -1,4 +1,4 @@
-const process = require('node:process');
+require('dotenv').config();
 const { Server } = require('./Server');
 const { Database } = require('./structures/Database');
 
