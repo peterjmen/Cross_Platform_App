@@ -1,5 +1,6 @@
 const express = require('express');
 const { Database } = require('./structures/Database');
+const { authRoutes } = require('./routes/auth');
 
 /**
  * "Wrapper" around the express server.
@@ -10,16 +11,9 @@ class Server {
      * @param {Database} database The database connection.
      */
     constructor(options, database) {
-        this.port = options.port;
+        this.options = options;
         this.rest = express();
         this.database = database;
-
-        this.rest.use(
-            `/v${options.version ?? 0}`,
-            express.json(),
-            // TODO: Routes
-            (_, res) => res.status(404).json({ success: false, message: 'Not yet implemented' }),
-        );
     }
 
     /**
@@ -27,9 +21,28 @@ class Server {
      * @returns {Promise<void>}
      */
     async listen() {
+        const { port, version } = this.options;
+
+        this.rest.use(
+            `/v${version ?? 0}`,
+            express.json(),
+
+            // Routes
+            authRoutes(this, this.database),
+
+            // Route not found
+            (_, res) => res.status(404).json({ success: false, details: 'Not found' }),
+
+            // Internal server error
+            (err, _, res) => {
+                console.error(err);
+                res.status(500).json({ success: false, details: 'Internal server error' });
+            }
+        );
+
         return new Promise(resolve => {
-            this.rest.listen(this.port, () => {
-                console.info(`Server listening on port ${this.port}`);
+            this.rest.listen(port, () => {
+                console.info(`Server listening on port ${port}`);
                 resolve();
             });
         });
