@@ -4,8 +4,6 @@
         "build": "react-scripts build",
         "dev": "react-scripts start",
         "eject": "react-scripts eject",
-        "format": "prettier --write src/**/*.{js,jsx} && npm run lint -- --fix",
-        "lint": "eslint src/**/*.{js,jsx}",
         "start": "serve -s build",
         "test": "react-scripts test"
     },
