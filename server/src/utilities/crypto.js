@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const brypt = require('bcrypt');
-const Token = process.env['JWT_TOKEN'];
+const Secret = process.env['JWT_TOKEN'];
 
 /**
  * Hash a password.
@@ -27,7 +27,11 @@ function comparePassword(password, hash) {
  * @returns The token.
  */
 function createToken(user) {
-    return jwt.sign(user.id, Token);
+    return jwt.sign({
+        uid: user.id,
+        iat: Date.now() / 1000,
+        exp: Date.now() / 1000 + 60 * 60 * 24 * 7 // 7 days
+    }, Secret);
 }
 
 // TODO: Create a middleware to verify tokens
@@ -35,12 +39,12 @@ function createToken(user) {
 /**
  * Verify the validity of a token.
  * @param {string} token The token to verify.
- * @returns User ID if valid, null if invalid.
+ * @returns {string|null} User ID if valid, null if invalid.
  */
 function verifyToken(token) {
     try {
-        const id = jwt.verify(token, process.env['JWT_SECRET']);
-        return id.payload;
+        const payload = jwt.verify(token, Secret);
+        return payload;
     } catch {
         return null;
     }
