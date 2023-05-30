@@ -37,6 +37,7 @@ class AuthenticationController extends Controller {
     }
 
     /**
+     * Logs in a user with an email and password.
      * @param {import('express').Request<any, any, { email: string; password: string; }>} req
      * @param {import('express').Response} res
      */
@@ -63,6 +64,15 @@ class AuthenticationController extends Controller {
 
         const token = createToken(user);
         return this.success(res, { ...user.toJSON(), token });
+    }
+
+    /**
+     * Gets the currently logged in user.
+     * @param {import('express').Request} req
+     * @param {import('express').Response} res
+     */
+    async accountMe(req, res) {
+        return this.success(res, req.user.toJSON());
     }
 }
 
