@@ -13,7 +13,6 @@ async function useToken(req, res, next) {
     const token = req.header('authorization');
     const payload = token ? verifyToken(token) : null;
 
-    console.log(payload);
     if (!payload) return res.status(401).json({
         success: false,
         details: 'You must be logged in to do that'
