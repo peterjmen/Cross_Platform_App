@@ -1,0 +1,53 @@
+.header-menu {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+
+.header-menu li {
+  margin: 0 10px;
+}
+
+.header-menu li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.content {
+  min-height: calc(100vh - 120px);
+}
+
+.footer {
+  background-color: rgb(77, 109, 238);
+  padding: 10px;
+  text-align: center;
+}
+
+.footer-menu {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.footer-menu li {
+  margin: 0 10px;
+}
+
+.footer-menu li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.page-title {
+  text-align: center;
+}
