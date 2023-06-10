@@ -24,7 +24,8 @@
     },
     "prettier": "prettier-config-apteryx",
     "dependencies": {
-        "bootstrap": "^5.2.3",
+        "bootstrap": "^5.3.0",
+        "react-bootstrap": "^2.7.4",
         "react-router-dom": "^6.11.2",
         "web-vitals": "^3.3.2"
     }

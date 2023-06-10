@@ -1,9 +1,13 @@
 import React from 'react';
+import Content from './ExCatalogueComponents/Content';
+import Header from './ExCatalogueComponents/Header';
+import Details from './ExCatalogueComponents/Details';
 
 const ExerciseCatalogue = () => {
     return <div>
-        <h1>Exercise Catalogue</h1>
-        <p>Content to come</p>
+        <Header />
+        <Content />
+        <Details />
     </div>;
 };
 
