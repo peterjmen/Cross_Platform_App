@@ -18,6 +18,16 @@
     min-height: calc(100vh - 120px);
 }
 
+.catalogue-container {
+    min-height: auto;
+}
+
+.details-container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
 .footer {
     background-color: rgb(77, 109, 238);
     padding: 10px;
