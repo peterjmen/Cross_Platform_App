@@ -13,7 +13,7 @@ const ListedExercise = ({
             onChange={() => handleTickBox(listedExercise.id)}
             checked={listedExercise.checked}
         />
-        <label>{listedExercise.exName}</label>
+        <label>{listedExercise.name}</label>
         {/* Uncommented lines */}
         {/* <label>{listedExercise.exBodyPart}</label>
       <label>{listedExercise.exImage}</label>

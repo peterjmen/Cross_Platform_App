@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import Content from './ExCatalogueComponents/Content';
 import Header from './ExCatalogueComponents/Header';
+import SearchCatalogue from './ExCatalogueComponents/SearchCatalogue';
 import Details from './ExCatalogueComponents/Details';
 import AddToCatalogue from './ExCatalogueComponents/AddToCatalogue';
 import '../App.css';
 
 const ExerciseCatalogue = () => {
     const [name, setName] = useState('');
+    const [search, setSearch] = useState('');
+    const [cataloguedExercise, setCataloguedExercise] = useState(
+        JSON.parse(localStorage.getItem('selectedExercisesList')) || []
+    );
+
     const addExercise = name => {
         const id = cataloguedExercise.length
             ? cataloguedExercise[cataloguedExercise.length - 1].id + 1
             : 1;
-        const theNewExercise = { id, checked: false, exName: name };
+        const theNewExercise = { id, checked: false, name: name };
         const updatedExercises = [...cataloguedExercise, theNewExercise];
         setCataloguedExercise(updatedExercises);
         localStorage.setItem(
@@ -19,42 +25,6 @@ const ExerciseCatalogue = () => {
             JSON.stringify(updatedExercises)
         );
     };
-
-    const [cataloguedExercise, setCataloguedExercise] = useState([
-        {
-            id: 1,
-            checked: false,
-            exName: 'Example exercise 1',
-            exBodyPart: '//TODO ie chest',
-            exImage: '//TODO insert link',
-            exPrimaryMuscle: '//TODO i.e. Pectorials',
-            exSecondaryMuscle: '//TODO i.e. Triceps',
-            exDescription:
-                '//TODO i.e. Lower bar to chest, the push and straighten arms',
-        },
-        {
-            id: 2,
-            checked: false,
-            exName: 'Example exercise 2',
-            exBodyPart: '//TODO ie chest',
-            exImage: '//TODO insert link',
-            exPrimaryMuscle: '//TODO i.e. Pectorials',
-            exSecondaryMuscle: '//TODO i.e. Triceps',
-            exDescription:
-                '//TODO i.e. Lower bar to chest, the push and straighten arms',
-        },
-        {
-            id: 3,
-            checked: false,
-            exName: 'Example exercise 3',
-            exBodyPart: '//TODO ie chest',
-            exImage: '//TODO insert link',
-            exPrimaryMuscle: '//TODO i.e. Pectorials',
-            exSecondaryMuscle: '//TODO i.e. Triceps',
-            exDescription:
-                '//TODO i.e. Lower bar to chest, the push and straighten arms',
-        },
-    ]);
 
     const handleClick = () => {
         alert('This is handling a click');
@@ -81,7 +51,6 @@ const ExerciseCatalogue = () => {
             exercise => exercise.id !== id
         );
 
-        // alert(`You clicked the delete button of item ${itemToDelete.exName}`);
         setCataloguedExercise(updatedExercises);
         localStorage.setItem(
             'selectedExercisesList',
@@ -113,9 +82,9 @@ const ExerciseCatalogue = () => {
 
     const handleSubmitExercise = e => {
         e.preventDefault();
-        // alert(`You added ${name} to the catalogue`);
         addExercise(name);
         setName('');
+        alert(`You added ${name} to the catalogue`);
     };
 
     const handleChange = e => {
@@ -129,11 +98,17 @@ const ExerciseCatalogue = () => {
             handleChange={handleChange}
             handleSubmitExercise={handleSubmitExercise}
         />
+        <SearchCatalogue search={search} setSearch={setSearch} />
+        <div className="details-container">
+            <Details lengthOfArray={cataloguedExercise.length} />
+        </div>
         <div className="catalogue-container">
             <Content
+                cataloguedExercise={cataloguedExercise.filter(exercise =>
+                    exercise.name.toLowerCase().includes(search.toLowerCase())
+                )}
                 name={name}
                 setName={setName}
-                cataloguedExercise={cataloguedExercise}
                 setCataloguedExercise={setCataloguedExercise}
                 handleClick={handleClick}
                 handleChange={handleChange}
@@ -143,9 +118,6 @@ const ExerciseCatalogue = () => {
                 handleAdd={handleAdd}
                 handleRemove={handleRemove}
             />
-        </div>
-        <div className="details-container">
-            <Details lengthOfArray={cataloguedExercise.length} />
         </div>
     </div>;
 };
