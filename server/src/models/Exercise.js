@@ -2,29 +2,38 @@ const { Schema, model } = require('mongoose');
 
 const schema = new Schema(
     {
-        role: {
-            type: String,
-            default: 'user',
-            enum: ['admin', 'physiotherapist', 'user'],
+        checked: {
+            type: Boolean,
+            default: false,
         },
 
-        firstName: {
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+
+        bodyPart: {
             type: String,
             required: true,
         },
 
-        lastName: {
+        imageUrl: {
             type: String,
             required: true,
         },
 
-        email: {
+        primaryMuscle: {
             type: String,
             required: true,
-            unique: true,
         },
 
-        password: {
+        secondaryMuscle: {
+            type: String,
+            required: true,
+        },
+
+        description: {
             type: String,
             required: true,
         },
@@ -36,17 +45,12 @@ const schema = new Schema(
                 record.id = record._id;
                 delete record._id;
                 delete record.__v;
-                delete record.password;
                 return record;
             }
         }
     },
 );
 
-Schema.virtual('fullName').get(function () {
-    return `${this.firstName} ${this.lastName}`;
-});
+const Exercise = model('Exercise', schema);
 
-const User = model('User', schema);
-
-module.exports = { User };
+module.exports = { Exercise };
