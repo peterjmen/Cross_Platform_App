@@ -7,8 +7,8 @@ function exercisesRoutes(server) {
     const router = Router();
     const controller = new ExercisesController(server);
 
-    router.get('/exercises/search', controller.searchExercises.bind(controller));
-    router.post('/exercises/create', useToken, controller.createExercise.bind(controller));
+    router.get('/exercises', controller.getExercises.bind(controller));
+    router.put('/exercises', useToken, controller.createExercise.bind(controller));
 
     return router;
 }
