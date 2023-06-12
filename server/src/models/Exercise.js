@@ -23,14 +23,11 @@ const schema = new Schema(
             required: true,
         },
 
-        primaryMuscle: {
-            type: String,
+        muscles: {
+            type: [String],
             required: true,
-        },
-
-        secondaryMuscle: {
-            type: String,
-            required: true,
+            // Ensure at least one is provided
+            validate: (v) => Array.isArray(v) && v.length > 0,
         },
 
         description: {
