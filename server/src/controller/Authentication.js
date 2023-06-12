@@ -11,14 +11,14 @@ const PasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 class AuthenticationController extends Controller {
     /**
      * Creates a new user with an email and password.
-     * @param {import('express').Request<any, any, { email: string; password: string; }>} req
+     * @param {import('express').Request<any, any, { name: string; email: string; password: string; }>} req
      * @param {import('express').Response} res
      */
     async accountRegister(req, res) {
-        const { email, password } = req.body;
+        const { name, email, password } = req.body;
 
-        if (!email || !password)
-            return this.error(res, 400, 'Missing email or password');
+        if (!name || !email || !password)
+            return this.error(res, 400, 'Missing name, email or password');
 
         if (typeof email !== 'string' || !EmailRegex.test(email))
             return this.error(res, 400, 'Provided email was invalid');

@@ -8,12 +8,7 @@ const schema = new Schema(
             enum: ['admin', 'physiotherapist', 'user'],
         },
 
-        firstName: {
-            type: String,
-            required: true,
-        },
-
-        lastName: {
+        name: {
             type: String,
             required: true,
         },
@@ -42,10 +37,6 @@ const schema = new Schema(
         }
     },
 );
-
-Schema.virtual('fullName').get(function () {
-    return `${this.firstName} ${this.lastName}`;
-});
 
 const User = model('User', schema);
 
