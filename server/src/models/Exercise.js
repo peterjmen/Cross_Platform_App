@@ -2,9 +2,10 @@ const { Schema, model } = require('mongoose');
 
 const schema = new Schema(
     {
-        checked: {
-            type: Boolean,
-            default: false,
+        creator: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
         },
 
         name: {
