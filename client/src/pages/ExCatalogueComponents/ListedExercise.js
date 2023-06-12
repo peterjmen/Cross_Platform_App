@@ -22,7 +22,7 @@ const ListedExercise = ({
       <label>{listedExercise.exDescription}</label> */}
         {/* End of uncommented lines */}
         <button type="button" onClick={() => handleDelete(listedExercise.id)}>
-            Delete from list
+            Delete from Catalogue
         </button>
         <button type="button" onClick={() => handleAdd(listedExercise.id)}>
             + to program
