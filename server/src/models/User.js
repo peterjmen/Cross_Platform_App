@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const { hashPassword } = require('../utilities/crypto');
 
 const schema = new Schema(
     {
@@ -37,6 +38,12 @@ const schema = new Schema(
         }
     },
 );
+
+schema.pre('save', function (next) {
+    if (this.isModified('password'))
+        this.password = hashPassword(this.password);
+    next();
+});
 
 const User = model('User', schema);
 
