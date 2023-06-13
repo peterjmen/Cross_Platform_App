@@ -32,15 +32,14 @@ class ExercisesController extends Controller {
     async createExercise(req, res) {
         const { name, bodyPart, imageUrl, muscles, description } = req.body;
 
-        // Calling toString like so prevents prototype pollution attacks
-        const toString = String.prototype.toString;
-        if (!name || toString.call(name) !== name)
+        if (typeof name !== 'string' || name.length === 0)
             return this.error(res, 400, 'Missing or invalid name');
-        if (!description || toString.call(description) !== description)
+        if (typeof description !== 'string' || description.length === 0)
             return this.error(res, 400, 'Missing or invalid description');
-        if (!bodyPart || toString.call(bodyPart) !== bodyPart)
+        if (typeof bodyPart !== 'string' || bodyPart.length === 0)
             return this.error(res, 400, 'Missing or invalid body part');
-        if (!imageUrl || toString.call(imageUrl) !== imageUrl)
+        // TODO: Add better validation for image URLs
+        if (typeof imageUrl !== 'string' || imageUrl.length < 10)
             return this.error(res, 400, 'Missing or invalid image URL');
         if (!Array.isArray(muscles) || muscles.length === 0)
             return this.error(res, 400, 'Muscles must be an array with at least one muscle');
@@ -90,15 +89,13 @@ class ExercisesController extends Controller {
 
         const { name, bodyPart, imageUrl, muscles, description } = req.body;
 
-        // Calling toString like so prevents prototype pollution attacks
-        const toString = String.prototype.toString;
-        if (name && toString.call(name) === name)
+        if (name && typeof name === 'string' && name.length > 0)
             exercise.name = name;
-        if (description && toString.call(description) === description)
+        if (description && typeof description === 'string' && description.length > 0)
             exercise.description = description;
-        if (bodyPart && toString.call(bodyPart) === bodyPart)
+        if (bodyPart && typeof bodyPart === 'string' && bodyPart.length > 0)
             exercise.bodyPart = bodyPart;
-        if (imageUrl && toString.call(imageUrl) === imageUrl)
+        if (imageUrl && typeof imageUrl === 'string' && imageUrl.length > 9)
             exercise.imageUrl = imageUrl;
         if (Array.isArray(muscles) && muscles.length > 0)
             exercise.muscles = muscles;
