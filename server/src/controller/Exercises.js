@@ -1,3 +1,4 @@
+const { isValidObjectId } = require('mongoose');
 const { Exercise } = require('../models/Exercise');
 const { Controller } = require('../structures/Controller');
 
@@ -11,7 +12,7 @@ class ExercisesController extends Controller {
     async getExercises(req, res) {
         // TODO: Implement caching and pagination, or would that be overkill?
         let { query } = req.query;
-        query = query && String.prototype.toString.call(query) === query
+        query = typeof query === 'string'
             ? query.trim()
             : null;
 
@@ -32,32 +33,111 @@ class ExercisesController extends Controller {
         const { name, bodyPart, imageUrl, muscles, description } = req.body;
 
         // Calling toString like so prevents prototype pollution attacks
-        if (!name || String.prototype.toString.call(name) !== name)
+        const toString = String.prototype.toString;
+        if (!name || toString.call(name) !== name)
             return this.error(res, 400, 'Missing or invalid name');
-        if (!description || String.prototype.toString.call(description) !== description)
+        if (!description || toString.call(description) !== description)
             return this.error(res, 400, 'Missing or invalid description');
-        if (!bodyPart || String.prototype.toString.call(bodyPart) !== bodyPart)
+        if (!bodyPart || toString.call(bodyPart) !== bodyPart)
             return this.error(res, 400, 'Missing or invalid body part');
-        if (!imageUrl || String.prototype.toString.call(imageUrl) !== imageUrl)
+        if (!imageUrl || toString.call(imageUrl) !== imageUrl)
             return this.error(res, 400, 'Missing or invalid image URL');
         if (!Array.isArray(muscles) || muscles.length === 0)
             return this.error(res, 400, 'Muscles must be an array with at least one muscle');
 
-        const exercise = await Exercise.create({
+        return Exercise.create({
             creator: req.user.id,
             name, description,
             bodyPart, imageUrl, muscles,
         })
-            .catch(err => {
-                // In theory, this should never error, but just in case
+            .then(exercise => this.success(res, exercise.toJSON(), 201))
+            .catch(() => this.error(res, 500, 'Failed to create exercise'));
+    }
+
+    /**
+     * Get all exercises, or search by name, description, body part, or muscle.
+     * @endpoint GET `/exercises/:id`
+     * @param {import('express').Request<{ id?: string; }>} req
+     * @param {import('express').Response} res
+     */
+    async getExercise(req, res) {
+        const { id } = req.params;
+        if (!id || isValidObjectId(id) === false)
+            return this.error(res, 400, 'Missing or invalid ID');
+
+        const exercise = await Exercise.findById(id);
+        if (exercise) return this.success(res, exercise.toJSON());
+        return this.error(res, 404, 'Exercise not found');
+    }
+
+    /**
+     * Update an existing exercise.
+     * @endpoint PATCH `/exercises/:id`
+     * @param {import('express').Request<{ id?: string; }>} req
+     * @param {import('express').Response} res
+     */
+    async updateExercise(req, res) {
+        const { id } = req.params;
+        if (!id || isValidObjectId(id) === false)
+            return this.error(res, 400, 'Missing or invalid ID');
+
+        const exercise = await Exercise.findById(id);
+        if (!exercise)
+            return this.error(res, 404, 'Exercise not found');
+        // All exercises are public so no real need to worry about information leaking
+        if (!exercise.creator.equals(req.user.id))
+            return this.error(res, 403, 'You do not have permission to edit this exercise');
+
+        const { name, bodyPart, imageUrl, muscles, description } = req.body;
+
+        // Calling toString like so prevents prototype pollution attacks
+        const toString = String.prototype.toString;
+        if (name && toString.call(name) === name)
+            exercise.name = name;
+        if (description && toString.call(description) === description)
+            exercise.description = description;
+        if (bodyPart && toString.call(bodyPart) === bodyPart)
+            exercise.bodyPart = bodyPart;
+        if (imageUrl && toString.call(imageUrl) === imageUrl)
+            exercise.imageUrl = imageUrl;
+        if (Array.isArray(muscles) && muscles.length > 0)
+            exercise.muscles = muscles;
+
+        const hasBeenModified = exercise.isModified();
+        if (hasBeenModified) {
+            const result = await exercise.save().catch(err => {
                 console.error(err);
                 return null;
             });
 
-        if (!exercise)
-            return this.error(res, 500, 'Failed to create exercise');
+            if (result === null)
+                return this.error(res, 500, 'Failed to update exercise');
+        }
 
         return this.success(res, exercise.toJSON());
+    }
+
+    /**
+     * Delete an existing exercise.
+     * @endpoint DELETE `/exercises/:id`
+     * @param {import('express').Request<{ id?: string; }>} req
+     * @param {import('express').Response} res
+     */
+    async deleteExercise(req, res) {
+        const { id } = req.params;
+        if (!id || isValidObjectId(id) === false)
+            return this.error(res, 400, 'Missing or invalid ID');
+
+        const exercise = await Exercise.findById(id);
+        if (!exercise)
+            return this.error(res, 404, 'Exercise not found');
+        if (!exercise.creator.equals(req.user.id))
+            return this.error(res, 403, 'You do not have permission to edit this exercise');
+
+        return exercise.deleteOne()
+            .then(() => this.success(res, '', 204))
+            .catch(() => this.error(res, 500, 'Failed to delete exercise'));
+
     }
 }
 
