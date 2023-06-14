@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const { Database } = require('./structures/Database');
 const { usersRoutes } = require('./routes/users');
 const { exercisesRoutes } = require('./routes/exercises');
@@ -23,6 +24,8 @@ class Server {
      */
     async listen() {
         const { port, version } = this.options;
+
+        this.rest.use(cors({ origin: '*' }));
 
         this.rest.use(
             `/v${version ?? 0}`,

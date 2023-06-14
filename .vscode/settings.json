@@ -8,7 +8,6 @@
     "css.lint.unknownAtRules": "ignore",
 
     // General editor settings
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.detectIndentation": false,
     "editor.formatOnSave": true,
     "editor.insertSpaces": true,
@@ -18,9 +17,6 @@
     // ESLint settings
     "eslint.format.enable": true,
     "eslint.validate": ["typescript"],
-
-    // Prettier settings
-    "prettier.tabWidth": 4,
 
     // File-related settings
     "files.autoSave": "onFocusChange",
