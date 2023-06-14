@@ -30,7 +30,7 @@ class AuthenticationController extends Controller {
             return this.error(res, 400, 'An account with that email already exists');
 
         const hashedPassword = hashPassword(password);
-        const user = await User.create({ email, password: hashedPassword });
+        const user = await User.create({ name, email, password: hashedPassword });
 
         const token = createToken(user);
         return this.success(res, { ...user.toJSON(), token });

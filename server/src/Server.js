@@ -1,6 +1,7 @@
 const express = require('express');
 const { Database } = require('./structures/Database');
 const { authRoutes } = require('./routes/auth');
+const { exercisesRoutes } = require('./routes/exercises');
 
 /**
  * "Wrapper" around the express server.
@@ -29,6 +30,7 @@ class Server {
 
             // Routes
             authRoutes(this, this.database),
+            exercisesRoutes(this, this.database),
 
             // Route not found
             (_, res) => res.status(404).json({ success: false, details: 'Not found' }),
