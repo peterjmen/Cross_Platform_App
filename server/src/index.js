@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Server } = require('./Server');
 const { Database } = require('./structures/Database');
+require('./tempData');
 
 main();
 async function main() {
