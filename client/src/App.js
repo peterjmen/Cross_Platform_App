@@ -6,6 +6,7 @@ import SettingsPage from './pages/SettingsPage';
 import TemplatesPage from './pages/TemplatesPage';
 import PatientsPage from './pages/PatientsPage';
 import ExerciseCatalogue from './pages/ExerciseCatalogue';
+import ExerciseDatabase from './pages/ExerciseDatabase';
 
 import './App.css';
 
@@ -32,6 +33,9 @@ function App() {
                     <li>
                         <Link to="/exercise-catalogue">Exercise Catalogue</Link>
                     </li>
+                    <li>
+                        <Link to="/exercise-database">Exercise Database</Link>
+                    </li>
                 </ul>
             </nav>
 
@@ -45,6 +49,10 @@ function App() {
                     <Route
                         path="/exercise-catalogue"
                         element={<ExerciseCatalogue />}
+                    />
+                    <Route
+                        path="/exercise-database"
+                        element={<ExerciseDatabase />}
                     />
                 </Routes>
             </div>
@@ -65,6 +73,12 @@ function App() {
                     </li>
                     <li>
                         <Link to="/settings">Settings</Link>
+                    </li>
+                    <li>
+                        <Link to="/exercise-catalogue">Exercise Catalogue</Link>
+                    </li>
+                    <li>
+                        <Link to="/exercise-database">Exercise Database</Link>
                     </li>
                 </ul>
             </footer>

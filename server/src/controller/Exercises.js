@@ -12,15 +12,16 @@ class ExercisesController extends Controller {
     async getExercises(req, res) {
         // TODO: Implement caching and pagination, or would that be overkill?
         let { query } = req.query;
-        query = typeof query === 'string'
-            ? query.trim()
-            : null;
+        query = typeof query === 'string' ? query.trim() : null;
 
-        const exercises = query && query.length > 0
-            ? await Exercise.find({ $text: { $search: query } })
-            : await Exercise.find();
+        const exercises =
+            query && query.length > 0
+                ? await Exercise.find({ $text: { $search: query } })
+                : await Exercise.find();
 
-        return this.success(res, { exercises: exercises.map(exercise => exercise.toJSON()) });
+        return this.success(res, {
+            exercises: exercises.map(exercise => exercise.toJSON()),
+        });
     }
 
     /**
@@ -42,12 +43,19 @@ class ExercisesController extends Controller {
         if (typeof imageUrl !== 'string' || imageUrl.length < 10)
             return this.error(res, 400, 'Missing or invalid image URL');
         if (!Array.isArray(muscles) || muscles.length === 0)
-            return this.error(res, 400, 'Muscles must be an array with at least one muscle');
+            return this.error(
+                res,
+                400,
+                'Muscles must be an array with at least one muscle'
+            );
 
         return Exercise.create({
-            creator: req.user.id,
-            name, description,
-            bodyPart, imageUrl, muscles,
+            creator: '5f9c0b0b0b0b0b0b0b0b0b0b', //TODO req.user.id,
+            name,
+            description,
+            bodyPart,
+            imageUrl,
+            muscles,
         })
             .then(exercise => this.success(res, exercise.toJSON(), 201))
             .catch(() => this.error(res, 500, 'Failed to create exercise'));
@@ -81,17 +89,24 @@ class ExercisesController extends Controller {
             return this.error(res, 400, 'Missing or invalid ID');
 
         const exercise = await Exercise.findById(id);
-        if (!exercise)
-            return this.error(res, 404, 'Exercise not found');
+        if (!exercise) return this.error(res, 404, 'Exercise not found');
         // All exercises are public so no real need to worry about information leaking
-        if (!exercise.creator.equals(req.user.id))
-            return this.error(res, 403, 'You do not have permission to edit this exercise');
+        if (!exercise.creator.equals('5f9c0b0b0b0b0b0b0b0b0b0b'))
+            return this.error(
+                res,
+                403,
+                'You do not have permission to edit this exercise'
+            );
 
         const { name, bodyPart, imageUrl, muscles, description } = req.body;
 
         if (name && typeof name === 'string' && name.length > 0)
             exercise.name = name;
-        if (description && typeof description === 'string' && description.length > 0)
+        if (
+            description &&
+            typeof description === 'string' &&
+            description.length > 0
+        )
             exercise.description = description;
         if (bodyPart && typeof bodyPart === 'string' && bodyPart.length > 0)
             exercise.bodyPart = bodyPart;
@@ -126,15 +141,18 @@ class ExercisesController extends Controller {
             return this.error(res, 400, 'Missing or invalid ID');
 
         const exercise = await Exercise.findById(id);
-        if (!exercise)
-            return this.error(res, 404, 'Exercise not found');
-        if (!exercise.creator.equals(req.user.id))
-            return this.error(res, 403, 'You do not have permission to edit this exercise');
+        if (!exercise) return this.error(res, 404, 'Exercise not found');
+        if (!exercise.creator.equals('5f9c0b0b0b0b0b0b0b0b0b0b'))
+            return this.error(
+                res,
+                403,
+                'You do not have permission to edit this exercise'
+            );
 
-        return exercise.deleteOne()
+        return exercise
+            .deleteOne()
             .then(() => this.success(res, '', 204))
             .catch(() => this.error(res, 500, 'Failed to delete exercise'));
-
     }
 }
 

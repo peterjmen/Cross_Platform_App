@@ -7,11 +7,12 @@ function exercisesRoutes(server) {
     const router = Router();
     const controller = new ExercisesController(server);
 
+    //TODO auth token req's disabled for now
     router.get('/exercises', controller.getExercises.bind(controller));
-    router.put('/exercises', useToken, controller.createExercise.bind(controller));
+    router.put('/exercises', controller.createExercise.bind(controller));
     router.get('/exercises/:id', controller.getExercise.bind(controller));
-    router.patch('/exercises/:id', useToken, controller.updateExercise.bind(controller));
-    router.delete('/exercises/:id', useToken, controller.deleteExercise.bind(controller));
+    router.patch('/exercises/:id', controller.updateExercise.bind(controller));
+    router.delete('/exercises/:id', controller.deleteExercise.bind(controller));
 
     return router;
 }
