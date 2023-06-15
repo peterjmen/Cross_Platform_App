@@ -3,6 +3,8 @@ const { Program } = require('../models/Program');
 const { isValidObjectId } = require("mongoose");
 const { Exercise } = require("../models/Exercise");
 
+const isNullish = v => v === null || v === undefined;
+
 class ProgramsController extends Controller {
     /**
      * Get all programs, or search by name, description, body part, or muscle.
@@ -31,26 +33,41 @@ class ProgramsController extends Controller {
      */
     async createProgram(req, res) {
         let { name, description, exercises: exerciseIds, sets, repetitions, rest, frequency } = req.body;
-        exerciseIds = exerciseIds.filter((v, i, a) => a.indexOf(v) === i && isValidObjectId(v));
+        exerciseIds = exerciseIds?.filter((v, i, a) => a.indexOf(v) === i && isValidObjectId(v));
 
+        if (isNullish(name)) return this.error(res, 400, 'Name is required');
         if (typeof name !== 'string' || name.length === 0)
-            return this.error(res, 400, 'Missing or invalid name');
-        if (description && (typeof description !== 'string' || description.length === 0))
-            return this.error(res, 400, 'Missing or invalid description');
+            return this.error(res, 400, 'Provided name is invalid');
+
+        if (isNullish(description)) return this.error(res, 400, 'Description is required');
+        if (typeof description !== 'string' || description.length === 0)
+            return this.error(res, 400, 'Provided description is invalid');
+
+        if (isNullish(exerciseIds)) return this.error(res, 400, 'Exercises are required');
         if (!Array.isArray(exerciseIds) || exerciseIds.length === 0)
             return this.error(res, 400, 'Exercises must have at least one exercise');
+        if (exerciseIds.some(id => !isValidObjectId(id)))
+            return this.error(res, 400, 'Provided exercises are invalid');
+
+        if (isNullish(sets)) return this.error(res, 400, 'Sets are required');
         if (typeof sets !== 'number' || sets < 1)
             return this.error(res, 400, 'Sets must be a number greater than 0');
+
+        if (isNullish(repetitions)) return this.error(res, 400, 'Repetitions are required');
         if (typeof repetitions !== 'number' || repetitions < 1)
             return this.error(res, 400, 'Repetitions must be a number greater than 0');
+
+        if (isNullish(rest)) return this.error(res, 400, 'Rest is required');
         if (typeof rest !== 'number' || rest < 1)
             return this.error(res, 400, 'Rest must be a number greater than 0');
+
+        if (isNullish(frequency)) return this.error(res, 400, 'Frequency is required');
         if (typeof frequency !== 'string' || frequency.length === 0)
-            return this.error(res, 400, 'Missing or invalid frequency');
+            return this.error(res, 400, 'Provided frequency is invalid');
 
         const exercises = await Exercise.find({ _id: { $in: exerciseIds } });
         if (exercises.length !== exerciseIds.length)
-            return this.error(res, 400, 'Exercises must have at least one exercise');
+            return this.error(res, 400, 'Provided exercises are invalid');
 
         return Program.create({
             creator: req.user.id,
@@ -70,10 +87,8 @@ class ProgramsController extends Controller {
      */
     async getProgram(req, res) {
         const { id } = req.params;
-        if (typeof id !== 'string' || id.length === 0)
-            return this.error(res, 400, 'Missing or invalid program ID');
 
-        const program = await Program.findById(id);
+        const program = isValidObjectId(id) && await Program.findById(id);
         if (!program) return this.error(res, 404, 'Program not found');
         return this.success(res, program.toJSON());
     }
@@ -86,47 +101,59 @@ class ProgramsController extends Controller {
      */
     async updateProgram(req, res) {
         const { id } = req.params;
-        if (typeof id !== 'string' || id.length === 0)
-            return this.error(res, 400, 'Missing or invalid program ID');
 
-        const program = await Program.findById(id);
+        const program = isValidObjectId(id) && await Program.findById(id);
         if (!program) return this.error(res, 404, 'Program not found');
+
         if (!program.creator.equals(req.user.id))
             return this.error(res, 403, 'You do not have permission to update this program');
 
         let { name, description, exercises: exerciseIds, sets, repetitions, rest, frequency } = req.body;
         exerciseIds = exerciseIds?.filter((v, i, a) => a.indexOf(v) === i && isValidObjectId(v));
 
-        if (name && typeof name === 'string' && name.length > 0)
-            program.name = name;
-        if (description && typeof description === 'string' && description.length > 0)
-            program.description = description;
-        if (exerciseIds && Array.isArray(exerciseIds) && exerciseIds.length > 0) {
+        if (!isNullish(name) && (typeof name !== 'string' || name.length === 0))
+            return this.error(res, 400, 'Provided name is invalid');
+        if (!isNullish(name)) program.name = name;
+
+        if (!isNullish(description) && (typeof description !== 'string' || description.length === 0))
+            return this.error(res, 400, 'Provided description is invalid');
+        if (!isNullish(description)) program.description = description;
+
+        if (!isNullish(exerciseIds)) {
+            if (!Array.isArray(exerciseIds) || exerciseIds.length === 0)
+                return this.error(res, 400, 'Exercises must have at least one exercise');
+            if (exerciseIds.some(id => !isValidObjectId(id)))
+                return this.error(res, 400, 'Provided exercises are invalid');
+        }
+
+        if (!isNullish(sets) && (typeof sets !== 'number' || sets < 1))
+            return this.error(res, 400, 'Sets must be a number greater than 0');
+        if (!isNullish(sets)) program.sets = sets;
+
+        if (!isNullish(repetitions) && (typeof repetitions !== 'number' || repetitions < 1))
+            return this.error(res, 400, 'Repetitions must be a number greater than 0');
+        if (!isNullish(repetitions)) program.repetitions = repetitions;
+
+        if (!isNullish(rest) && (typeof rest !== 'number' || rest < 1))
+            return this.error(res, 400, 'Rest must be a number greater than 0');
+        if (!isNullish(rest)) program.rest = rest;
+
+        if (!isNullish(frequency) && (typeof frequency !== 'string' || frequency.length === 0))
+            return this.error(res, 400, 'Provided frequency is invalid');
+
+        if (!isNullish(exerciseIds)) {
             const exercises = await Exercise.find({ _id: { $in: exerciseIds } });
-            if (exercises.length === exerciseIds.length)
-                program.exercises = exercises.map(e => e.id);
-        }
-        if (sets && typeof sets === 'number' && sets > 0)
-            program.sets = sets;
-        if (repetitions && typeof repetitions === 'number' && repetitions > 0)
-            program.repetitions = repetitions;
-        if (rest && typeof rest === 'number' && rest > 0)
-            program.rest = rest;
-        if (frequency && typeof frequency === 'string' && frequency.length > 0)
-            program.frequency = frequency;
-
-        const hasBeenModified = program.isModified();
-        if (hasBeenModified) {
-            const result = await program.save().catch(err => {
-                console.error(err);
-                return null;
-            });
-
-            if (result === null)
-                return this.error(res, 500, 'Failed to update program');
+            if (exercises.length !== exerciseIds.length)
+                return this.error(res, 400, 'Provided exercises are invalid');
+            program.exercises = exercises.map(e => e.id);
         }
 
-        return this.success(res, program.toJSON());
+        if (program.isModified()) {
+            const result = await program.save().catch(() => null);
+            if (!result) return this.error(res, 500, 'Failed to update program');
+        }
+
+        return this.success(res, program.toJSON(), 201);
     }
 
     /**
@@ -137,11 +164,10 @@ class ProgramsController extends Controller {
      */
     async deleteProgram(req, res) {
         const { id } = req.params;
-        if (typeof id !== 'string' || id.length === 0)
-            return this.error(res, 400, 'Missing or invalid program ID');
 
-        const program = await Program.findById(id);
+        const program = isValidObjectId(id) && await Program.findById(id);
         if (!program) return this.error(res, 404, 'Program not found');
+
         if (!program.creator.equals(req.user.id))
             return this.error(res, 403, 'You do not have permission to delete this program');
 
