@@ -2,6 +2,7 @@ const { User } = require('../models/User');
 const { Controller } = require('../structures/Controller');
 const { createToken, comparePassword } = require('../utilities/crypto');
 
+const isNullish = v => v === null || v === undefined;
 const EmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
@@ -15,18 +16,21 @@ class UsersController extends Controller {
     async createUser(req, res) {
         const { name, email, password } = req.body;
 
-        if (!name || !email || !password)
-            return this.error(res, 400, 'Missing required fields');
+        if (isNullish(name)) return this.error(res, 400, 'Name is required');
+        if (typeof name !== 'string') return this.error(res, 400, 'Provided name is invalid');
 
+        if (isNullish(email)) return this.error(res, 400, 'Email address is required');
         if (typeof email !== 'string' || !EmailRegex.test(email))
-            return this.error(res, 400, 'Provided email was invalid');
+            return this.error(res, 400, 'Provided email address is invalid');
+
+        if (isNullish(password)) return this.error(res, 400, 'Password is required');
         if (typeof password !== 'string' || !PasswordRegex.test(password))
             return this.error(res, 400, 'Password must be at least 8 characters long, contain at least one letter and one number');
 
         const existing = await User.findOne({ email });
-        if (existing) return this.error(res, 400, 'Provided email was invalid');
+        if (existing) return this.error(res, 400, 'Provided email address is invalid');
 
-        // Password is hashed before being saved, refer to the models/User.js file
+        // Password is automatically hashed before being saved, refer to the models/User.js file
         const user = await User.create({ name, email, password });
 
         const token = createToken(user);
@@ -40,28 +44,25 @@ class UsersController extends Controller {
      * @param {import('express').Response} res
      */
     async loginUser(req, res) {
+        // Most errors are the same to prevent information leaking
         const { email, password } = req.body;
 
-        if (!email || !password)
-            return this.error(res, 400, 'Missing email or password');
-
-        // All errors are the same to prevent information leaking
-        // Might as well check if the email and password are valid, prevents unnecessary database queries
+        if (isNullish(email)) return this.error(res, 400, 'Email address is required');
         if (typeof email !== 'string' || !EmailRegex.test(email))
             return this.error(res, 400, 'Email or password was incorrect');
+
+        if (isNullish(password)) return this.error(res, 400, 'Password is required');
         if (typeof password !== 'string' || !PasswordRegex.test(password))
             return this.error(res, 400, 'Email or password was incorrect');
 
-        const user = await User.findOne({ email });
-        if (!user)
-            return this.error(res, 400, 'Email or password was incorrect');
+        const existing = await User.findOne({ email });
+        if (!existing) return this.error(res, 400, 'Email or password was incorrect');
 
-        const isCorrect = comparePassword(password, user.password);
-        if (!isCorrect)
-            return this.error(res, 400, 'Email or password was incorrect');
+        const isCorrect = comparePassword(password, existing.password);
+        if (!isCorrect) return this.error(res, 400, 'Email or password was incorrect');
 
-        const token = createToken(user);
-        return this.success(res, { ...user.toJSON(), token });
+        const token = createToken(existing);
+        return this.success(res, { ...existing.toJSON(), token });
     }
 
     /**
@@ -84,22 +85,28 @@ class UsersController extends Controller {
         const user = req.user;
         const { name, email, password } = req.body;
 
-        if (name && typeof name === 'string') user.name = name;
-        if (email && typeof email === 'string') user.email = email;
-        if (password && typeof password === 'string') user.password = password;
+        if (!isNullish(name) && (typeof name !== 'string' || name.length === 0))
+            return this.error(res, 400, 'Provided name was invalid');
+        if (!isNullish(name)) user.name = name;
 
-        if (user.isModified('email')) {
+        if (!isNullish(email) && (typeof email !== 'string' || !EmailRegex.test(email)))
+            return this.error(res, 400, 'Provided email was invalid');
+        if (!isNullish(email)) {
             const existing = await User.findOne({ email, _id: { $ne: req.user.id } });
             if (existing) return this.error(res, 400, 'Provided email was invalid');
+            user.email = email;
         }
 
+        if (!isNullish(password) && (typeof password !== 'string' || !PasswordRegex.test(password)))
+            return this.error(res, 400, 'Provided password was invalid');
+        if (!isNullish(password)) user.password = password;
+
         if (user.isModified()) {
-            const result = await user.save()
-                .catch(() => null);
+            const result = await user.save().catch(() => null);
             if (!result) return this.error(res, 500, 'Failed to update user');
         }
 
-        return this.success(res, user.toJSON());
+        return this.success(res, user.toJSON(), 201);
     }
 
     /**
@@ -109,13 +116,9 @@ class UsersController extends Controller {
      * @param {import('express').Response} res
      */
     async deleteCurrentUser(req, res) {
-        const user = req.user;
-
-        const result = await user.deleteOne()
-            .catch(() => null);
-        if (!result) return this.error(res, 500, 'Failed to delete user');
-
-        return this.success(res, '', 204);
+        return req.user.deleteOne()
+            .then(() => this.success(res, {}))
+            .catch(() => this.error(res, 500, 'Failed to delete user'));
     }
 }
 
