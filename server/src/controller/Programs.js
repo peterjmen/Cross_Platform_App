@@ -9,18 +9,21 @@ class ProgramsController extends Controller {
     /**
      * Get all programs, or search by name, description, body part, or muscle.
      * @endpoint GET `/programs`
-     * @param {import('express').Request} req
+     * @param {import('express').Request<any, any, any, { query?: string; creator?: string; }>} req
      * @param {import('express').Response} res
      */
     async getPrograms(req, res) {
-        let { query } = req.query;
-        query = typeof query === 'string'
-            ? query.trim()
-            : null;
+        let { query, creator } = req.query;
 
-        const programs = query && query.length > 0
-            ? await Program.find({ $text: { $search: query } })
-            : await Program.find();
+        if (creator && !isValidObjectId(creator))
+            return this.error(res, 400, 'Creator query parameter is invalid');
+
+        const finder = Program.find();
+
+        if (typeof query === 'string' && query.length > 0) finder.find({ $text: { $search: query.trim() } });
+        if (creator) finder.find({ creator });
+
+        const programs = await finder.exec();
 
         return this.success(res, { programs: programs.map(program => program.toJSON()) });
     }
