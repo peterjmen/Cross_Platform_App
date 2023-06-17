@@ -8,18 +8,21 @@ class ExercisesController extends Controller {
     /**
      * Get all exercises, or search by name, description, body part, or muscle.
      * @endpoint GET `/exercises`
-     * @param {import('express').Request<any, any, { query?: string; }>} req
+     * @param {import('express').Request<any, any, any, { query?: string; creator?: string; }>} req
      * @param {import('express').Response} res
      */
     async getExercises(req, res) {
-        let { query } = req.query;
-        query = typeof query === 'string'
-            ? query.trim()
-            : null;
+        let { query, creator } = req.query;
 
-        const exercises = query && query.length > 0
-            ? await Exercise.find({ $text: { $search: query } })
-            : await Exercise.find();
+        if (creator && !isValidObjectId(creator))
+            return this.error(res, 400, 'Creator query parameter is invalid');
+
+        const finder = Exercise.find();
+
+        if (typeof query === 'string' && query.length > 0) finder.find({ $text: { $search: query.trim() } });
+        if (creator) finder.find({ creator });
+
+        const exercises = await finder.exec();
 
         return this.success(res, { exercises: exercises.map(exercise => exercise.toJSON()) });
     }
