@@ -1,10 +1,11 @@
 @import './common-styles.css';
+
 .page-title {
   text-align: center;
   background-color: rgb(100, 157, 223);
   color: #333;
   padding: 10px;
-  margin-top: -450px;
+  margin-top: -350px;
   width: 98vw;
   max-width: 100%;
 }

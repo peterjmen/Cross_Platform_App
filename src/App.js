@@ -10,27 +10,7 @@ import './App.css';
 function App() {
   return (
     <Router>
-      <div>
-        <nav>
-          <ul className="header-menu">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/templates">Templates</Link>
-            </li>
-            <li>
-              <Link to="/patients">Patients</Link>
-            </li>
-            <li>
-              <Link to="/my-exercises">My Exercises</Link>
-            </li>
-            <li>
-              <Link to="/settings">Settings</Link>
-            </li>
-          </ul>
-        </nav>
-
+      <div className="app-container">
         <div className="content">
           <Routes>
             <Route path="/" element={<HomePage />} />

@@ -5,9 +5,6 @@
     background-color: rgb(100, 157, 223);
     color: #333;
     padding: 10px;
-    margin-top: -450px;
-    width: 98vw;
-    max-width: 100%;
   }
   
   .search-bar {
@@ -18,4 +15,32 @@
     padding: 10px;
     margin-bottom: 20px;
   }
+  
+  .template-menu {
+    background-color: #f2f2f2;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .template-menu ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .template-menu ul li {
+    margin: 0 10px;
+  }
+  
+  .template-menu ul li a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .template-menu p {
+    font-weight: bold;
+  }
+  
   
