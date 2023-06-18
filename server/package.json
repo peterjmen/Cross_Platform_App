@@ -2,8 +2,8 @@
     "name": "server",
     "scripts": {
         "build": "echo \"Server does not need to be built\" && exit 0",
-        "dev": "nodemon src/index.js",
-        "start": "node src/index.js"
+        "dev": "cross-env NODE_ENV=development nodemon src/index.js",
+        "start": "cross-env NODE_ENV=production node src/index.js"
     },
     "dependencies": {
         "bcrypt": "^5.1.0",
