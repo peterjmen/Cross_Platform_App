@@ -18,6 +18,9 @@
     "eslint.format.enable": true,
     "eslint.validate": ["typescript"],
 
+    // Prettier settings
+    "prettier.tabWidth": 4,
+
     // File-related settings
     "files.autoSave": "onFocusChange",
     "files.eol": "\n",

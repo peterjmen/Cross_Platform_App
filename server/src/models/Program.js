@@ -9,6 +9,16 @@ const schema = new Schema(
             required: true,
         },
 
+        name: {
+            type: String,
+            required: true,
+        },
+
+        description: {
+            type: String,
+            required: false,
+        },
+
         exercises: {
             type: [Schema.Types.ObjectId],
             ref: 'Exercise',
@@ -48,6 +58,15 @@ const schema = new Schema(
     }
 );
 
+schema.index({
+    name: 'text',
+    description: 'text',
+    'exercises.name': 'text',
+    'exercises.description': 'text',
+    'exercises.bodyPart': 'text',
+    'exercises.muscles': 'text',
+});
+
 const Program = mongoose.model('Program', schema);
 
-module.exports = Program;
+module.exports = { Program };

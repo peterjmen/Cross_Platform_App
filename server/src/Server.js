@@ -3,6 +3,7 @@ const cors = require('cors');
 const { Database } = require('./structures/Database');
 const { usersRoutes } = require('./routes/users');
 const { exercisesRoutes } = require('./routes/exercises');
+const { programsRoutes } = require('./routes/programs');
 
 /**
  * "Wrapper" around the express server.
@@ -34,6 +35,7 @@ class Server {
             // Routes
             usersRoutes(this, this.database),
             exercisesRoutes(this, this.database),
+            programsRoutes(this, this.database),
 
             // Route not found
             (_, res) => res.status(404).json({ success: false, details: 'Not found' }),

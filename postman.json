@@ -1,0 +1,453 @@
+{
+    "info": {
+        "_postman_id": "92fef990-eb0f-4cb5-b7c1-6c621523f8ce",
+        "name": "Cross Platform App",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "13861938"
+    },
+    "item": [
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Current User",
+                    "item": [
+                        {
+                            "name": "Get Current User",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:3001/v0/users/@me",
+                                    "protocol": "http",
+                                    "host": ["localhost"],
+                                    "port": "3001",
+                                    "path": ["v0", "users", "@me"]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update Current User",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n    \"name\": \"New name\"\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:3001/v0/users/@me",
+                                    "protocol": "http",
+                                    "host": ["localhost"],
+                                    "port": "3001",
+                                    "path": ["v0", "users", "@me"]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Delete Current User",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:3001/v0/users/@me",
+                                    "protocol": "http",
+                                    "host": ["localhost"],
+                                    "port": "3001",
+                                    "path": ["v0", "users", "@me"]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Create User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.collectionVariables.set('API_KEY', pm.response.json().token);\r",
+                                    "pm.collectionVariables.set('USER_ID', pm.response.json().id);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"example@gmail.com\",\r\n    \"password\": \"password123\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3001/v0/users",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "users"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.collectionVariables.set('API_KEY', pm.response.json().token);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"email\": \"example@gmail.com\",\r\n    \"password\": \"password123\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3001/v0/users",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "users"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Exercises",
+            "item": [
+                {
+                    "name": "Get Exercises",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3001/v0/exercises",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "exercises"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Exercise",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.collectionVariables.set('EXERCISE_ID', pm.response.json().id);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"Push-ups\",\r\n    \"bodyPart\": \"Upper body\",\r\n    \"imageUrl\": \"https://example.com/push-ups.jpg\",\r\n    \"muscles\": [\"Chest\", \"Shoulders\", \"Triceps\"],\r\n    \"description\": \"Start in a plank position with your hands shoulder-width apart...\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3001/v0/exercises",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "exercises"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Exercise",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3001/v0/exercises/:id",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "exercises", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "{{EXERCISE_ID}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Exercise",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"New name\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3001/v0/exercises/:id",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "exercises", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "{{EXERCISE_ID}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Exercise",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3001/v0/exercises/:id",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "exercises", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "{{EXERCISE_ID}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Programs",
+            "item": [
+                {
+                    "name": "Get Programs",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3001/v0/programs",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "programs"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Program",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.collectionVariables.set('PROGRAM_ID', pm.response.json().id);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"Full body workout\",\r\n    \"description\": \"This is a full body workout program...\",\r\n    \"exercises\": [\"{{EXERCISE_ID}}\"],\r\n    \"sets\": 3,\r\n    \"repetitions\": 10,\r\n    \"rest\": 60,\r\n    \"frequency\": \"3 times a week\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3001/v0/programs",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "programs"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Program",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3001/v0/programs/:id",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "programs", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "{{PROGRAM_ID}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Program",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"New name\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3001/v0/programs/:id",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "programs", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "{{PROGRAM_ID}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Program",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3001/v0/programs/:id",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3001",
+                            "path": ["v0", "programs", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "{{PROGRAM_ID}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "apikey",
+        "apikey": [
+            {
+                "key": "key",
+                "value": "Authorization",
+                "type": "string"
+            },
+            {
+                "key": "in",
+                "value": "header",
+                "type": "string"
+            },
+            {
+                "key": "value",
+                "value": "{{API_KEY}}",
+                "type": "string"
+            }
+        ]
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "API_KEY",
+            "value": ""
+        },
+        {
+            "key": "USER_ID",
+            "value": ""
+        },
+        {
+            "key": "EXERCISE_ID",
+            "value": ""
+        },
+        {
+            "key": "PROGRAM_ID",
+            "value": ""
+        }
+    ]
+}
