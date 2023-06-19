@@ -38,12 +38,16 @@ class Server {
             programsRoutes(this, this.database),
 
             // Route not found
-            (_, res) => res.status(404).json({ success: false, details: 'Not found' }),
+            (_, res) =>
+                res.status(404).json({ success: false, details: 'Not found' }),
 
             // Internal server error
             (err, _, res) => {
                 console.error(err);
-                res.status(500).json({ success: false, details: 'Internal server error' });
+                res.status(500).json({
+                    success: false,
+                    details: 'Internal server error',
+                });
             }
         );
 

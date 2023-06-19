@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AddToDatabase from './ExDatabaseComponents/AddToDatabase';
 import ShowDatabaseContent from './ExDatabaseComponents/ShowDatabaseContent';
+import SearchBar from './SearchBar';
 
 function ExerciseDatabase() {
     const [exercises, setExercises] = useState([]);
@@ -25,7 +26,8 @@ function ExerciseDatabase() {
         })
             .then(res => {
                 if (res.status === 204) {
-                    refreshExerciseList();
+                    // Exercise successfully deleted
+                    refreshExerciseList(); // Update the exercise list after deletion
                 } else if (res.ok) {
                     return res.json();
                 } else {
@@ -46,8 +48,10 @@ function ExerciseDatabase() {
         <ShowDatabaseContent
             exercises={exercises}
             deleteExercise={deleteExercise}
+            refreshExerciseList={refreshExerciseList}
         />
         <AddToDatabase refreshExerciseList={refreshExerciseList} />
+        <SearchBar />
     </>;
 }
 

@@ -4,6 +4,7 @@ import Header from './ExCatalogueComponents/Header';
 import SearchCatalogue from './ExCatalogueComponents/SearchCatalogue';
 import Details from './ExCatalogueComponents/Details';
 import AddToCatalogue from './ExCatalogueComponents/AddToCatalogue';
+import SearchBar from './SearchBar';
 import '../App.css';
 
 const ExerciseCatalogue = () => {
@@ -91,8 +92,8 @@ const ExerciseCatalogue = () => {
         setName(e.target.value);
     };
 
-    return <div>
-        <Header stringPropertyUno="stringPropertyUno" />
+    return <div className="exercise-catalogue-container">
+        <Header />
         <AddToCatalogue
             name={name}
             handleChange={handleChange}
@@ -119,6 +120,7 @@ const ExerciseCatalogue = () => {
                 handleRemove={handleRemove}
             />
         </div>
+        <SearchBar />
     </div>;
 };
 

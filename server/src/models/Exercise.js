@@ -28,7 +28,7 @@ const schema = new Schema(
             type: [String],
             required: true,
             // Ensure at least one is provided
-            validate: (v) => Array.isArray(v) && v.length > 0,
+            validate: v => Array.isArray(v) && v.length > 0,
         },
 
         description: {
@@ -44,12 +44,17 @@ const schema = new Schema(
                 delete record._id;
                 delete record.__v;
                 return record;
-            }
-        }
-    },
+            },
+        },
+    }
 );
 
-schema.index({ name: 'text', description: 'text', bodyPart: 'text', muscles: 'text' });
+schema.index({
+    name: 'text',
+    description: 'text',
+    bodyPart: 'text',
+    muscles: 'text',
+});
 
 const Exercise = model('Exercise', schema);
 

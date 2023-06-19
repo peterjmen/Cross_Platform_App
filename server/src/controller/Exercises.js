@@ -19,12 +19,15 @@ class ExercisesController extends Controller {
 
         const finder = Exercise.find();
 
-        if (typeof query === 'string' && query.length > 0) finder.find({ $text: { $search: query.trim() } });
+        if (typeof query === 'string' && query.length > 0)
+            finder.find({ $text: { $search: query.trim() } });
         if (creator) finder.find({ creator });
 
         const exercises = await finder.exec();
 
-        return this.success(res, { exercises: exercises.map(exercise => exercise.toJSON()) });
+        return this.success(res, {
+            exercises: exercises.map(exercise => exercise.toJSON()),
+        });
     }
 
     /**
@@ -40,19 +43,23 @@ class ExercisesController extends Controller {
         if (typeof name !== 'string' || name.length === 0)
             return this.error(res, 400, 'Provided name is invalid');
 
-        if (isNullish(description)) return this.error(res, 400, 'Description is required');
+        if (isNullish(description))
+            return this.error(res, 400, 'Description is required');
         if (typeof description !== 'string' || description.length === 0)
             return this.error(res, 400, 'Provided description is invalid');
 
-        if (isNullish(bodyPart)) return this.error(res, 400, 'Body part is required');
+        if (isNullish(bodyPart))
+            return this.error(res, 400, 'Body part is required');
         if (typeof bodyPart !== 'string' || bodyPart.length === 0)
             return this.error(res, 400, 'Provided body part is invalid');
 
-        if (isNullish(imageUrl)) return this.error(res, 400, 'Image URL is required');
+        if (isNullish(imageUrl))
+            return this.error(res, 400, 'Image URL is required');
         if (typeof imageUrl !== 'string' || imageUrl.length < 10)
             return this.error(res, 400, 'Provided image URL is invalid');
 
-        if (isNullish(muscles)) return this.error(res, 400, 'Muscles are required');
+        if (isNullish(muscles))
+            return this.error(res, 400, 'Muscles are required');
         if (!Array.isArray(muscles) || muscles.length === 0)
             return this.error(res, 400, 'Provided muscles are invalid');
 
@@ -77,7 +84,7 @@ class ExercisesController extends Controller {
     async getExercise(req, res) {
         const { id } = req.params;
 
-        const exercise = isValidObjectId(id) && await Exercise.findById(id);
+        const exercise = isValidObjectId(id) && (await Exercise.findById(id));
         if (!exercise) return this.error(res, 404, 'Exercise not found');
         return this.success(res, exercise.toJSON());
     }
@@ -91,11 +98,12 @@ class ExercisesController extends Controller {
     async updateExercise(req, res) {
         const { id } = req.params;
 
-        const exercise = isValidObjectId(id) && await Exercise.findById(id);
+        const exercise = isValidObjectId(id) && (await Exercise.findById(id));
         if (!exercise) return this.error(res, 404, 'Exercise not found');
 
         // All exercises are public so no real need to worry about information leaking
         if (!exercise.creator.equals('5f9c0b0b0b0b0b0b0b0b0b0b'))
+            //TODO check id
             return this.error(
                 res,
                 403,
@@ -108,25 +116,38 @@ class ExercisesController extends Controller {
             return this.error(res, 400, 'Provided name is invalid');
         if (!isNullish(name)) exercise.name = name;
 
-        if (!isNullish(description) && (typeof description !== 'string' || description.length === 0))
+        if (
+            !isNullish(description) &&
+            (typeof description !== 'string' || description.length === 0)
+        )
             return this.error(res, 400, 'Provided description is invalid');
         if (description) exercise.description = description;
 
-        if (!isNullish(bodyPart) && (typeof bodyPart !== 'string' || bodyPart.length === 0))
+        if (
+            !isNullish(bodyPart) &&
+            (typeof bodyPart !== 'string' || bodyPart.length === 0)
+        )
             return this.error(res, 400, 'Provided body part is invalid');
         if (!isNullish(bodyPart)) exercise.bodyPart = bodyPart;
 
-        if (!isNullish(imageUrl) && (typeof imageUrl !== 'string' || imageUrl.length < 10))
+        if (
+            !isNullish(imageUrl) &&
+            (typeof imageUrl !== 'string' || imageUrl.length < 10)
+        )
             return this.error(res, 400, 'Provided image URL is invalid');
         if (!isNullish(imageUrl)) exercise.imageUrl = imageUrl;
 
-        if (!isNullish(muscles) && (!Array.isArray(muscles) || muscles.length === 0))
+        if (
+            !isNullish(muscles) &&
+            (!Array.isArray(muscles) || muscles.length === 0)
+        )
             return this.error(res, 400, 'Provided muscles are invalid');
         if (!isNullish(muscles)) exercise.muscles = muscles;
 
         if (exercise.isModified()) {
             const result = await exercise.save().catch(() => null);
-            if (!result) return this.error(res, 500, 'Failed to update exercise');
+            if (!result)
+                return this.error(res, 500, 'Failed to update exercise');
         }
 
         return this.success(res, exercise.toJSON(), 201);
@@ -141,13 +162,19 @@ class ExercisesController extends Controller {
     async deleteExercise(req, res) {
         const { id } = req.params;
 
-        const exercise = isValidObjectId(id) && await Exercise.findById(id);
+        const exercise = isValidObjectId(id) && (await Exercise.findById(id));
         if (!exercise) return this.error(res, 404, 'Exercise not found');
 
-        if (!exercise.creator.equals(req.user.id))
-            return this.error(res, 403, 'You do not have permission to edit this exercise');
+        if (!exercise.creator.equals('5f9c0b0b0b0b0b0b0b0b0b0b'))
+            //TODO check id instead
+            return this.error(
+                res,
+                403,
+                'You do not have permission to edit this exercise'
+            );
 
-        return exercise.deleteOne()
+        return exercise
+            .deleteOne()
             .then(() => this.success(res, {}))
             .catch(() => this.error(res, 500, 'Failed to delete exercise'));
     }
