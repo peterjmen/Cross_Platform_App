@@ -1,0 +1,46 @@
+@import './common-styles.css';
+
+.page-title {
+    text-align: center;
+    background-color: rgb(100, 157, 223);
+    color: #333;
+    padding: 10px;
+  }
+  
+  .search-bar {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .template-menu {
+    background-color: #f2f2f2;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .template-menu ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .template-menu ul li {
+    margin: 0 10px;
+  }
+  
+  .template-menu ul li a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .template-menu p {
+    font-weight: bold;
+  }
+  
+  

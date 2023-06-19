@@ -1,11 +1,55 @@
+@import './common-styles.css';
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .home-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 80vh;
+  overflow-y: auto;
 }
 
-.page-title {
-  text-align: center;
+.search-bar {
+  width: 98%;
+  max-width: 100%;
+  height: 30px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.search-bar button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(100, 157, 223);
+  color: #333;
+  cursor: pointer;
+}
+
+.login-input {
+  width: 300px;
+  height: 20px;
+}
+
+.password-input {
+  width: 272px;
+  height: 20px;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
