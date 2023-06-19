@@ -17,7 +17,7 @@ const ShowDatabaseContent = ({ exercises, deleteExercise }) => {
                         : 'N/A'}
                 </p>
                 <button onClick={() => deleteExercise(exercise.id)}>
-                    Delete (works but need to refresh page)
+                    Delete
                 </button>
             </li>)}
         </ul>}

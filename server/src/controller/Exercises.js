@@ -173,10 +173,12 @@ class ExercisesController extends Controller {
                 'You do not have permission to edit this exercise'
             );
 
-        return exercise
-            .deleteOne()
-            .then(() => this.success(res, {}))
-            .catch(() => this.error(res, 500, 'Failed to delete exercise'));
+        try {
+            await exercise.deleteOne();
+            return res.sendStatus(204); // Send 204 status code
+        } catch (error) {
+            return this.error(res, 500, 'Failed to delete exercise');
+        }
     }
 }
 
