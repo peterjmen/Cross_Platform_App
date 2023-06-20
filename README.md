@@ -29,6 +29,8 @@ Then install the NPM packages.
 npm install
 ```
 
+Finally create a `.env` file within the `server` directory and add the environment variables listed in the `.env.example` file in the same directory.
+
 ### Running the Application
 
 There are two ways to start the application, either in development mode or production mode.
