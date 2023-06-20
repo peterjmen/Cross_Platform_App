@@ -1,18 +1,25 @@
-import { BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import styled from 'styled-components';
 import { NavigationBar } from './components/navigation';
+import './default.css';
+import './common.css';
+
+const Main = styled.main`
+    background-color: hsl(var(--background-color));
+    min-height: calc(100vh - 56px);
+    height: 100%;
+    margin-top: 56px;
+    width: 100%;
+`;
 
 export function Layout() {
     return <Router>
         <NavigationBar />
 
-        <main
-            className="h-full w-full bg-slate-200"
-            style={{ minHeight: 'calc(100vh - 56px)', height: 'calc(100vh - 56px)', marginTop: '56px' }}
-        >
+        <Main>
             <Routes>
-                {/* <Route path="/login" element={<LoginPage />} /> */}
-                {/* <Route path="/register" element={<RegisterPage />} /> */}
+                <Route path="/" element={<div>Hello world</div>} />
             </Routes>
-        </main>
+        </Main>
     </Router>;
 }

@@ -1,0 +1,7 @@
+:root {
+    --primary-color: 204 100% 50%;
+    --primary-color-hover: 204 80% 70%;
+    --secondary-color: 0 0% 100%;
+    --secondary-color-hover: 0 0% 96%;
+    --background-color: 0 0% 96%;
+}

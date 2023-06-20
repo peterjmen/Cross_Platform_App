@@ -2,6 +2,45 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Logo } from './logo';
 import { Button } from './button';
+import styled from 'styled-components';
+
+const Header = styled.header`
+    position: fixed; top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 56px;
+    width: 100vw;
+    padding: 8px;
+    background-color: hsl(var(--background-color) / 60%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const IconLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    color: hsl(var(--primary-color));
+    fill: hsl(var(--primary-color));
+`;
+
+const NavLink = styled(Link)`
+    color: rgba(0, 0, 0, 0.7);
+    transition: color 0.2s;
+    &:hover { color: rgba(0, 0, 0, 0.9); }
+`;
+
+const Title = styled.h1`
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+`;
+
+const Nav = styled.nav`
+    margin: auto;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+`;
 
 export function NavigationBar() {
     const location = useLocation();
@@ -16,32 +55,27 @@ export function NavigationBar() {
     useEffect(() => void setLoginState(), []);
     useEffect(() => void setLoginState(), [location]);
 
-    // NOTE: Not currently responsive, can be done later
-    return <header className="fixed top-0 h-14 flex items-center bg-slate-100 w-screen p-2 shadow-md">
-        <Link to="/" className="flex items-center text-blue-500 fill-blue-500">
-            <Logo className="w-10 h-10" />
-            <h1 className="font-semibold text-xl">Exercise App</h1>
-        </Link>
+    return <Header>
+        <IconLink to="/">
+            <Logo style={{ width: '40px', height: '40px' }} />
+            <Title>Exercise App</Title>
+        </IconLink>
 
-        <nav className="mx-auto space-x-6">
-            <NavigationLink to="/">Home</NavigationLink>
-            <NavigationLink to="/templates">Templates</NavigationLink>
-            <NavigationLink to="/exercises">Exercises</NavigationLink>
-            <NavigationLink to="/programs">Programs</NavigationLink>
+        <Nav>
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/templates">Templates</NavLink>
+            <NavLink to="/exercises">Exercises</NavLink>
+            <NavLink to="/programs">Programs</NavLink>
 
             {isLoggedIn && <>
-                <NavigationLink to="/profile">Profile</NavigationLink>
+                <NavLink to="/profile">Profile</NavLink>
             </>}
 
             {!isLoggedIn && <>
-                <NavigationLink to="/login">
+                <NavLink to="/login">
                     <Button variant="primary">Sign In</Button>
-                </NavigationLink>
+                </NavLink>
             </>}
-        </nav>
-    </header>
-}
-
-export function NavigationLink(props) {
-    return <Link className="text-black/70 hover:text-black transition-colors duration-200" {...props} />;
+        </Nav>
+    </Header>
 }
