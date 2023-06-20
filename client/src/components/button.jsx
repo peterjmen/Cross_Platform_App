@@ -12,8 +12,7 @@ Button.variants = {
     primary: css`
         background-color: hsl(var(--primary-color));
         color: white;
-        // TODO: Hover isnt working atm idk why fix later
-        &:hover { background-color: hsl(var(--primary-color) / 90%); };
+        &:hover { background-color: hsl(var(--primary-color-lighter)); };
     `,
     secondary: css`
         background-color: hsl(var(--secondary-color));
