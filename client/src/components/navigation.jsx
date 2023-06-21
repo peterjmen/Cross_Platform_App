@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Logo } from './logo';
-import { Button } from './button';
+import {useEffect, useState} from 'react';
+import {Link, useLocation} from 'react-router-dom';
+import {Logo} from './logo';
+import {Button} from './button';
 import styled from 'styled-components';
 
 const Header = styled.header`
-    position: fixed; top: 0;
+    position: fixed;
+    top: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,7 +27,9 @@ const IconLink = styled(Link)`
 const NavLink = styled(Link)`
     color: rgba(0, 0, 0, 0.7);
     transition: color 0.2s;
-    &:hover { color: rgba(0, 0, 0, 0.9); }
+    &:hover {
+        color: rgba(0, 0, 0, 0.9);
+    }
 `;
 
 const Title = styled.h1`
@@ -55,27 +58,34 @@ export function NavigationBar() {
     useEffect(() => void setLoginState(), []);
     useEffect(() => void setLoginState(), [location]);
 
-    return <Header>
-        <IconLink to="/">
-            <Logo style={{ width: '40px', height: '40px' }} />
-            <Title>Exercise App</Title>
-        </IconLink>
+    return (
+        <Header>
+            <IconLink to='/'>
+                <Logo style={{width: '40px', height: '40px'}} />
+                <Title>Exercise App</Title>
+            </IconLink>
 
-        <Nav>
-            <NavLink to="/">Home</NavLink>
-            <NavLink to="/templates">Templates</NavLink>
-            <NavLink to="/exercises">Exercises</NavLink>
-            <NavLink to="/programs">Programs</NavLink>
+            <Nav>
+                <NavLink to='/'>Home</NavLink>
+                <NavLink to='/templates'>Templates</NavLink>
+                <NavLink to='/exercises'>Exercises</NavLink>
+                <NavLink to='/programs'>Programs</NavLink>
+                <NavLink to='/ExerciseDatabase'>Catalogue</NavLink>
 
-            {isLoggedIn && <>
-                <NavLink to="/profile">Profile</NavLink>
-            </>}
+                {isLoggedIn && (
+                    <>
+                        <NavLink to='/profile'>Profile</NavLink>
+                    </>
+                )}
 
-            {!isLoggedIn && <>
-                <NavLink to="/login">
-                    <Button variant="primary">Sign In</Button>
-                </NavLink>
-            </>}
-        </Nav>
-    </Header>
+                {!isLoggedIn && (
+                    <>
+                        <NavLink to='/login'>
+                            <Button variant='primary'>Sign In</Button>
+                        </NavLink>
+                    </>
+                )}
+            </Nav>
+        </Header>
+    );
 }

@@ -1,8 +1,9 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import {Route, BrowserRouter as Router, Routes} from 'react-router-dom';
 import styled from 'styled-components';
-import { NavigationBar } from './components/navigation';
-import { LoginPage } from './pages/login';
-import { RegisterPage } from './pages/register';
+import {NavigationBar} from './components/navigation';
+import {LoginPage} from './pages/login';
+import {RegisterPage} from './pages/register';
+import {ExerciseDatabase} from './pages/ExerciseDatabase';
 import './default.css';
 import './common.css';
 
@@ -39,15 +40,24 @@ const Container = styled.div`
 `;
 
 export function Layout() {
-    return <Router>
-        <NavigationBar />
+    return (
+        <Router>
+            <NavigationBar />
 
-        <Main>
-            <Routes>
-                <Route path="/" element={<Container>Hello world</Container>} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-            </Routes>
-        </Main>
-    </Router>;
+            <Main>
+                <Routes>
+                    <Route
+                        path='/'
+                        element={<Container>Hello world</Container>}
+                    />
+                    <Route path='/login' element={<LoginPage />} />
+                    <Route path='/register' element={<RegisterPage />} />
+                    <Route
+                        path='/ExerciseDatabase'
+                        element={<ExerciseDatabase />}
+                    />
+                </Routes>
+            </Main>
+        </Router>
+    );
 }
