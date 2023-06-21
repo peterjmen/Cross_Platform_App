@@ -83,8 +83,9 @@ export function RegisterPage() {
             .then(response => response.json());
 
         if (result.success) {
-            localStorage.setItem('token', result.token);
             localStorage.setItem('name', result.name);
+            localStorage.setItem('id', result.id);
+            localStorage.setItem('token', result.token);
             navigate('/');
         } else {
             setError(result.details);
