@@ -20,11 +20,6 @@
     font: inherit;
 }
 
-/* Min body height */
-body {
-    min-height: 100vh;
-}
-
 /* Responsive images/videos */
 img,
 picture,

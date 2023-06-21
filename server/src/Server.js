@@ -1,6 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 const { Database } = require('./structures/Database');
-const { authRoutes } = require('./routes/auth');
+const { usersRoutes } = require('./routes/users');
+const { exercisesRoutes } = require('./routes/exercises');
+const { programsRoutes } = require('./routes/programs');
 
 /**
  * "Wrapper" around the express server.
@@ -23,12 +26,16 @@ class Server {
     async listen() {
         const { port, version } = this.options;
 
+        this.rest.use(cors({ origin: '*' }));
+
         this.rest.use(
             `/v${version ?? 0}`,
             express.json(),
 
             // Routes
-            authRoutes(this, this.database),
+            usersRoutes(this, this.database),
+            exercisesRoutes(this, this.database),
+            programsRoutes(this, this.database),
 
             // Route not found
             (_, res) => res.status(404).json({ success: false, details: 'Not found' }),

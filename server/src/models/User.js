@@ -1,8 +1,19 @@
 const { Schema, model } = require('mongoose');
+const { hashPassword } = require('../utilities/crypto');
 
-// Basic user schema, currently only stores email and password, needed to make auth route
 const schema = new Schema(
     {
+        role: {
+            type: String,
+            default: 'user',
+            enum: ['admin', 'physiotherapist', 'user'],
+        },
+
+        name: {
+            type: String,
+            required: true,
+        },
+
         email: {
             type: String,
             required: true,
@@ -27,6 +38,12 @@ const schema = new Schema(
         }
     },
 );
+
+schema.pre('save', function (next) {
+    if (this.isModified('password'))
+        this.password = hashPassword(this.password);
+    next();
+});
 
 const User = model('User', schema);
 
