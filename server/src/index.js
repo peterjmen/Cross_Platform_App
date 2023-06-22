@@ -1,13 +1,14 @@
 require('dotenv').config();
-const { Server } = require('./Server');
-const { Database } = require('./structures/Database');
+const {Server} = require('./Server');
+const {Database} = require('./structures/Database');
 
 main();
 async function main() {
     const database = new Database();
     await database.connect();
+    require('./tempData');
 
-    const server = new Server({ port: 3_001, version: 0 }, database);
+    const server = new Server({port: 3_001, version: 0}, database);
     await server.listen();
 
     process.on('SIGINT', async () => {

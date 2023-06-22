@@ -51,8 +51,9 @@ export function NavigationBar() {
 
     function setLoginState() {
         const name = localStorage.getItem('name');
+        const id = localStorage.getItem('id');
         const token = localStorage.getItem('token');
-        if (name && token) setIsLoggedIn(true);
+        if (name && id && token) setIsLoggedIn(true);
     }
 
     useEffect(() => void setLoginState(), []);
@@ -71,7 +72,6 @@ export function NavigationBar() {
                 <NavLink to='/exercises'>Exercises</NavLink>
                 <NavLink to='/programs'>Programs</NavLink>
                 <NavLink to='/ExerciseDatabase'>Catalogue</NavLink>
-
                 {isLoggedIn && (
                     <>
                         <NavLink to='/profile'>Profile</NavLink>
