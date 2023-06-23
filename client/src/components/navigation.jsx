@@ -76,7 +76,7 @@ export function NavigationBar() {
 
                 {isLoggedIn && (
                     <>
-                        <NavLink to="/profile"> Hi, {username}</NavLink> {/* Display the username */}
+                        <NavLink to="/profile"> Welcome, {username}</NavLink> {/* Display the username */}
                     </>
                 )}
 
