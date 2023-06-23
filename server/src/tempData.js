@@ -1,6 +1,6 @@
-const { Exercise } = require("./models/Exercise");
-const { Program } = require("./models/Program");
-const { User } = require("./models/User");
+const {Exercise} = require('./models/Exercise');
+const {Program} = require('./models/Program');
+const {User} = require('./models/User');
 
 async function seed() {
     await User.deleteMany({});
@@ -16,9 +16,11 @@ async function seed() {
     const exercise1 = await Exercise.create({
         creator: user.id,
         name: 'Push-ups',
-        description: 'Start in a plank position with your hands shoulder-width apart...',
+        description:
+            'Start in a plank position with your hands shoulder-width apart...',
         bodyPart: 'Upper body',
-        imageUrl: 'https://example.com/push-ups.jpg',
+        imageUrl:
+            'https://images.pexels.com/photos/2803158/pexels-photo-2803158.jpeg?cs=srgb&dl=pexels-tembela-bohle-2803158.jpg&fm=jpg',
         muscles: ['Chest', 'Shoulders', 'Triceps'],
     });
 
@@ -27,16 +29,19 @@ async function seed() {
         name: 'Squats',
         description: 'Stand with your feet shoulder-width apart...',
         bodyPart: 'Lower body',
-        imageUrl: 'https://example.com/squats.jpg',
+        imageUrl:
+            'https://images.pexels.com/photos/2803158/pexels-photo-2803158.jpeg?cs=srgb&dl=pexels-tembela-bohle-2803158.jpg&fm=jpg',
         muscles: ['Quadriceps', 'Hamstrings', 'Glutes'],
     });
 
     const exercise3 = await Exercise.create({
         creator: user.id,
         name: 'Plank',
-        description: 'Start in a push-up position with your forearms on the ground...',
+        description:
+            'Start in a push-up position with your forearms on the ground...',
         bodyPart: 'Core',
-        imageUrl: 'https://example.com/plank.jpg',
+        imageUrl:
+            'https://images.pexels.com/photos/2803158/pexels-photo-2803158.jpeg?cs=srgb&dl=pexels-tembela-bohle-2803158.jpg&fm=jpg',
         muscles: ['Abdominals', 'Obliques', 'Lower back'],
     });
 

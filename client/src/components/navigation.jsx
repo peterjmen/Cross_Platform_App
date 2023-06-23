@@ -71,7 +71,7 @@ export function NavigationBar() {
                 <NavLink to='/templates'>Templates</NavLink>
                 <NavLink to='/exercises'>Exercises</NavLink>
                 <NavLink to='/programs'>Programs</NavLink>
-                <NavLink to='/ExerciseDatabase'>Catalogue</NavLink>
+                <NavLink to='/ExercisesCatalogue'>Catalogue</NavLink>
                 {isLoggedIn && (
                     <>
                         <NavLink to='/profile'>Profile</NavLink>

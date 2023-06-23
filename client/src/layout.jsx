@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {NavigationBar} from './components/navigation';
 import {LoginPage} from './pages/login';
 import {RegisterPage} from './pages/register';
-import {ExerciseDatabase} from './pages/ExerciseDatabase';
+import {ExercisesCatalogue} from './pages/ExercisesCatalogue';
 import './default.css';
 import './common.css';
 
@@ -53,8 +53,8 @@ export function Layout() {
                     <Route path='/login' element={<LoginPage />} />
                     <Route path='/register' element={<RegisterPage />} />
                     <Route
-                        path='/ExerciseDatabase'
-                        element={<ExerciseDatabase />}
+                        path='/ExercisesCatalogue'
+                        element={<ExercisesCatalogue />}
                     />
                 </Routes>
             </Main>
