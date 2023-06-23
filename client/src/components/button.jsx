@@ -1,11 +1,17 @@
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
+
+/*
+interface ButtonProps {
+    variant: 'primary' | 'primary-inverted';
+}
+*/
 
 export const Button = styled.button`
     border-radius: 50px;
     padding: 8px 40px;
     transition: background-color 0.2s;
 
-    ${(props) => Button.variants[props.variant]}
+    ${({ variant }) => Button.variants[variant]}
 `;
 
 Button.variants = {
@@ -14,9 +20,9 @@ Button.variants = {
         color: white;
         &:hover { background-color: hsl(var(--primary-color-lighter)); };
     `,
-    secondary: css`
-        background-color: hsl(var(--secondary-color));
+    'primary-inverted': css`
+        background-color: white;
         color: black;
-        &:hover { background-color: hsl(var(--secondary-color) / 90%); };
+        &:hover { background-color: hsl(0 0% 100% / 90%); };
     `,
 };

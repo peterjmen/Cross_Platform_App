@@ -1,5 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import styled from 'styled-components';
+import { useCallback, useEffect, useRef } from 'react';
+import { styled } from 'styled-components';
+
+/*
+interface DialogProps {
+    isOpen: boolean;
+    onClose: () => void;
+    children: React.ReactNode;
+}
+*/
 
 export function Dialog({ isOpen, onClose, children }) {
     const dialogRef = useRef(null);

@@ -1,5 +1,14 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { Dialog } from './dialog';
+
+/*
+interface ProgramPickerProps {
+    programs: Program[];
+    isOpen: boolean;
+    setIsOpen: (isOpen: boolean) => void;
+    onSelect: (program: Program) => void;
+}
+*/
 
 export function ProgramPicker({ programs, isOpen, setIsOpen, onSelect }) {
     function handleSelect(program) {
@@ -24,7 +33,7 @@ export function ProgramPicker({ programs, isOpen, setIsOpen, onSelect }) {
         </List>
 
         {/* Maybe just create a program with a default name then call the handleSelect method */}
-        <NewProgramButton>Create a new program</NewProgramButton>
+        <NewProgram>Create a new program</NewProgram>
     </Dialog>
 }
 
@@ -58,7 +67,7 @@ const Program = styled.li`
     &:hover { background-color: lightgrey; }
 `;
 
-const NewProgramButton = styled.button`
+const NewProgram = styled.button`
     margin-top: 1rem;
     padding: 0.5rem 1rem;
     width: 100%;
