@@ -1,5 +1,7 @@
 const { Schema, model } = require('mongoose');
 const { hashPassword } = require('../utilities/crypto');
+const { Exercise } = require('./Exercise');
+const { Program } = require('./Program');
 
 const schema = new Schema(
     {
@@ -39,10 +41,18 @@ const schema = new Schema(
     },
 );
 
+// Hash password before saving
 schema.pre('save', function (next) {
     if (this.isModified('password'))
         this.password = hashPassword(this.password);
     next();
+});
+
+// Upon deletion, delete all programs and exercises created by this user
+schema.pre('deleteOne', { document: true, query: false }, async function () {
+    const { _id } = this;
+    await Program.deleteMany({ creator: _id });
+    await Exercise.deleteMany({ creator: _id });
 });
 
 const User = model('User', schema);
