@@ -5,10 +5,6 @@ export const Form = styled.form`
     flex-direction: column;
     align-items: center;
     gap: 8px;
-
-    @media (min-width: 768px) {
-        width: 33.333333%;
-    }
 `;
 
 export const Label = styled.label`

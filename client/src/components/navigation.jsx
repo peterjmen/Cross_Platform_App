@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Logo } from './logo';
 import { Button } from './button';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const Header = styled.header`
     position: fixed; top: 0;

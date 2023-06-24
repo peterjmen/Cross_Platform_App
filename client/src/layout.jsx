@@ -6,6 +6,7 @@ import { NavigationBar } from './components/navigation';
 import { ExerciseCard } from './components/exercise-card';
 import './default.css';
 import './common.css';
+import { ProfilePage } from './pages/profile';
 
 export function Layout() {
     return <Router>
@@ -16,6 +17,7 @@ export function Layout() {
 
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/profile" element={<Container><ProfilePage /></Container>} />
 
                 <Route path="/exercises" element={<Container>
                     {/* NOTE: JUST AN EXAMPLE */}

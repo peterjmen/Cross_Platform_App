@@ -54,7 +54,7 @@ export function LoginPage() {
 
             <Form onSubmit={form.handleSubmit(loginUser)}>
                 <Label htmlFor="login-email">Email Address</Label>
-                <Input id="login-email" type="text" {...form.register('email', { required: true })} placeholder="Tyoe your email address..." />
+                <Input id="login-email" type="text" {...form.register('email', { required: true })} placeholder="Type your email address..." />
 
                 <Label htmlFor="login-password">Password</Label>
                 <Input id="login-password" type="password" {...form.register('password', { required: true })} placeholder="Type your password..." />

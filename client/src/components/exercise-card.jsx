@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { styled } from 'styled-components';
 import { ProgramPicker } from './program-picker';
+import { DeletePrompt } from './delete-prompt';
 
 /*
 interface ExerciseCardProps {
@@ -11,6 +12,15 @@ interface ExerciseCardProps {
 
 export function ExerciseCard({ exercise, programs = [] }) {
     const [isProgramPickerOpen, setIsProgramPickerOpen] = useState(false);
+    const [isDeletePromptOpen, setIsDeletePromptOpen] = useState(false);
+
+    const creatorId = exercise.creator['id'] ? exercise.creator.id : exercise.creator;
+    const userId = useMemo(() => localStorage.getItem('id'), []);
+    // const token = useMemo(() => localStorage.getItem('token'), []);
+
+    const deleteExercise = useCallback(async () => { }, []);
+
+    const addToProgram = useCallback(async program => { }, []);
 
     return <Card>
         <Image src={exercise.imageUrl} />
@@ -18,21 +28,18 @@ export function ExerciseCard({ exercise, programs = [] }) {
         <Content>
             <h2>{exercise.name}</h2>
 
-            <BadgeContainer>
-                <BodyPartBadge>{exercise.bodyPart}</BodyPartBadge>
+            <Row>
+                <Badge>{exercise.bodyPart}</Badge>
 
-                {exercise.muscles.map(muscle => <MuscleBadge>{muscle}</MuscleBadge>)}
-            </BadgeContainer>
+                {exercise.muscles.map(muscle => <LighterBadge>{muscle}</LighterBadge>)}
+            </Row>
 
             <p>{exercise.description}</p>
 
-            <AddToProgramButton onClick={() => setIsProgramPickerOpen(true)}>
-                {/* + */}
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
-                    <rect x="10" y="2" width="4" height="20" rx="3" ry="3" />
-                    <rect x="2" y="10" width="20" height="4" rx="3" ry="3" />
-                </svg>
-            </AddToProgramButton>
+            <HoistedRow>
+                {creatorId === userId && <RedCircle role="button" onClick={() => setIsDeletePromptOpen(true)}>D</RedCircle>}
+                <PrimaryCircle role="button" onClick={() => setIsProgramPickerOpen(true)}>A</PrimaryCircle>
+            </HoistedRow>
         </Content>
 
         {/* The program picker is the same for every exercise, it would be better to only have one but this will do for now */}
@@ -41,7 +48,13 @@ export function ExerciseCard({ exercise, programs = [] }) {
             programs={programs}
             isOpen={isProgramPickerOpen}
             setIsOpen={setIsProgramPickerOpen}
-            onSelect={console.log}
+            onSelect={addToProgram}
+        />
+
+        <DeletePrompt
+            isOpen={isDeletePromptOpen}
+            setIsOpen={setIsDeletePromptOpen}
+            onConfirm={deleteExercise}
         />
     </Card>
 }
@@ -81,13 +94,13 @@ const Content = styled.div`
     }
 `;
 
-const BadgeContainer = styled.div`
+const Row = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
 `;
 
-const BodyPartBadge = styled.span`
+const Badge = styled.span`
     padding: 0.25rem 0.5rem;
     border-radius: 0.5rem;
     background-color: hsl(var(--primary-color) / 80%);
@@ -96,33 +109,34 @@ const BodyPartBadge = styled.span`
     font-weight: 600;
 `;
 
-const MuscleBadge = styled.span`
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.5rem;
+const LighterBadge = styled(Badge)`
     background-color: hsl(var(--primary-color) / 60%);
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 600;
 `;
 
-// circle with a plus sign in it
-const AddToProgramButton = styled.button`
+const HoistedRow = styled(Row)`
     position: absolute;
     top: 1rem;
     right: 1rem;
+`;
+
+const Circle = styled.div`
     height: 2rem;
     width: 2rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: hsl(var(--primary-color));
     color: white;
-    font-size: 1.5rem;
-    font-weight: 600;
+    cursor: pointer;
     transition: background-color 0.2s ease-in-out;
+`;
 
-    &:hover {
-        background-color: hsl(var(--primary-color) / 80%);
-    }
+const PrimaryCircle = styled(Circle)`
+    background-color: hsl(var(--primary-color));
+    &:hover { background-color: hsl(var(--primary-color) / 80%); }
+`;
+
+const RedCircle = styled(Circle)`
+    background-color: hsl(0, 80%, 60%);
+    &:hover { background-color: hsl(0 80% 60% / 80%); }
 `;
