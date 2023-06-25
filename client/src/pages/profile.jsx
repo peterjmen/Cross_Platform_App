@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Button } from '../components/common/button';
 import { Heading, Card as _Card, Content as _Content } from '../components/common/card';
@@ -12,6 +12,7 @@ import { DeletePrompt } from '../components/delete-prompt';
 
 export function ProfilePage() {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const id = useUserId();
     const token = useToken();
 
@@ -23,8 +24,14 @@ export function ProfilePage() {
     const isLoading = useMemo(() => !user || !exercises || !programs,
         [user, exercises, programs]);
 
+    let rawTab = searchParams.get('tab');
+    if (!['exercises', 'programs'].includes(rawTab)) rawTab = 'exercises';
+    const [selectedTab, setSelectedTab] = useState(rawTab);
     const [isEditorOpen, setIsEditorOpen] = useState(false);
-    const [selectedTab, setSelectedTab] = useState('exercises');
+
+    useEffect(() => {
+        setSearchParams({ tab: selectedTab });
+    }, [selectedTab]);
 
     const getCurrentUser = useCallback(async () => {
         return fetch(useApiUrl('users/@me'), { headers: new Headers({ 'Authorization': token }) })
