@@ -23,6 +23,7 @@ const schema = new Schema(
             type: [Schema.Types.ObjectId],
             ref: 'Exercise',
             required: true,
+            autopopulate: true,
         },
 
         sets: {
@@ -58,6 +59,7 @@ const schema = new Schema(
     }
 );
 
+// Enable text search on name, description, and exercises
 schema.index({
     name: 'text',
     description: 'text',
@@ -66,6 +68,9 @@ schema.index({
     'exercises.bodyPart': 'text',
     'exercises.muscles': 'text',
 });
+
+// Autopopulate exercises
+schema.plugin(require('mongoose-autopopulate'));
 
 const Program = mongoose.model('Program', schema);
 
