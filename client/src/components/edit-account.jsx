@@ -18,7 +18,6 @@ interface EditAccountProps {
 */
 
 export function EditAccount({ isOpen, setIsOpen, token, ...defaultValues }) {
-    console.log(isOpen, setIsOpen, token, defaultValues)
     const navigate = useNavigate();
     const { formState: { errors }, ...form } = useForm({ defaultValues });
     const [error, setError] = useState(null);

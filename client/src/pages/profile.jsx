@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { ExerciseCard } from '../components/exercise-card';
 import { EditAccount } from '../components/edit-account';
 import { Button } from '../components/button';
+import { ProgramCard } from '../components/program-card';
+import { useApiUrl } from '../hooks/api';
+import { ProgramPicker } from '../components/program-picker';
 
 export function ProfilePage() {
 
@@ -12,37 +15,65 @@ export function ProfilePage() {
     const token = useMemo(() => localStorage.getItem('token'), []);
 
     const [isLoading, setIsLoading] = useState(true);
+
     const [selectedTab, setSelectedTab] = useState('exercises');
     const [isEditorOpen, setIsEditorOpen] = useState(false);
+    const [isProgramPickerOpen, setIsProgramPickerOpen] = useState(false);
+    const [selectedExercise, setSelectedExercise] = useState(null);
+
     const [user, setUser] = useState(null);
     const [exercises, setExercises] = useState(null);
     const [programs, setPrograms] = useState(null);
 
-    async function getCurrentUser() {
+    const getCurrentUser = useCallback(async () => {
         const url = new URL('/v0/users/@me', 'http://localhost:3001');
 
         return fetch(url, { headers: new Headers({ 'Authorization': token }) })
             .then(response => response.json())
             .then(({ success, ...data }) => success ? setUser(data) : null);
-    }
+    }, [token, setUser]);
 
-    async function getMyExercises() {
+    const getMyExercises = useCallback(async () => {
         const url = new URL('/v0/exercises', 'http://localhost:3001');
         url.searchParams.append('creator', id);
 
         return fetch(url, { headers: new Headers({ 'Authorization': token }) })
             .then(response => response.json())
             .then(data => data.success ? setExercises(data.exercises) : null);
-    }
+    }, [token, id, setExercises]);
 
-    async function getMyPrograms() {
+    const getMyPrograms = useCallback(async () => {
         const url = new URL('/v0/programs', 'http://localhost:3001');
         url.searchParams.append('creator', id);
 
         return fetch(url, { headers: new Headers({ 'Authorization': token }) })
             .then(response => response.json())
             .then(data => data.success ? setPrograms(data.programs) : null);
-    }
+    }, [token, id, setPrograms]);
+
+    const addExerciseToProgram = useCallback(async (program, exercise) => {
+        const copy = program.exercises.map(e => e.id);
+        console.log('pre-push', program.exercises, copy);
+        copy.push(exercise.id);
+        console.log('post-push', copy);
+
+        const result = await fetch(useApiUrl(`programs/${program.id}`), {
+            method: 'PATCH',
+            body: JSON.stringify({ exercises: copy }),
+            headers: new Headers({
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            })
+        })
+            .then(response => response.json());
+
+        if (result.success) {
+            const newPrograms = programs.map(p => p.id === result.id ? result : p);
+            setPrograms(newPrograms);
+        } else {
+            console.error(result);
+        }
+    }, [token, programs, setPrograms]);
 
     useEffect(() => {
         if (!id || !token) return navigate('/login');
@@ -69,12 +100,22 @@ export function ProfilePage() {
         </TabGroup>
 
         {selectedTab === 'exercises' && <Grid>
-            {exercises.map(exercise => <ExerciseCard key={exercise.id} exercise={exercise} />)}
+            {exercises.map(exercise => <ExerciseCard key={exercise.id} exercise={exercise} onAdd={() => {
+                setSelectedExercise(exercise);
+                setIsProgramPickerOpen(true);
+            }} />)}
         </Grid>}
 
         {selectedTab === 'programs' && <Grid>
-            pretend programs are here
+            {programs.map(program => <ProgramCard key={program.id} program={program} />)}
         </Grid>}
+
+        {programs && <ProgramPicker
+            programs={programs}
+            isOpen={isProgramPickerOpen}
+            setIsOpen={setIsProgramPickerOpen}
+            onSelect={program => addExerciseToProgram(program, selectedExercise)}
+        />}
     </Container>
 }
 

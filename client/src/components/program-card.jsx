@@ -1,76 +1,65 @@
 import { useCallback, useMemo, useState } from 'react';
 import { styled } from 'styled-components';
-import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { DeletePrompt } from './delete-prompt';
+import { Link } from 'react-router-dom';
+import { EyeIcon, Trash2Icon } from 'lucide-react';
 
 /*
-interface ExerciseCardProps {
-    exercise: Exercise;
-    onAdd: () => void;
+interface ProgramCardProps {
+    program: Program;
 }
 */
 
-export function ExerciseCard({ exercise, onAdd }) {
+export function ProgramCard({ program }) {
     const [isDeletePromptOpen, setIsDeletePromptOpen] = useState(false);
 
-    const creatorId = exercise.creator['id'] ? exercise.creator.id : exercise.creator;
+    const creatorId = program.creator['id'] ? program.creator.id : program.creator;
     const userId = useMemo(() => localStorage.getItem('id'), []);
-    // const token = useMemo(() => localStorage.getItem('token'), []);
 
-    const deleteExercise = useCallback(async () => { }, []);
+    const deleteProgram = useCallback(async () => { }, []);
 
     return <Card>
-        <Image src={exercise.imageUrl} />
-
         <Content>
-            <h2>{exercise.name}</h2>
+            <h2>{program.name}</h2>
 
             <Row>
-                <Badge>{exercise.bodyPart}</Badge>
-
-                {exercise.muscles.map(muscle => <LighterBadge key={muscle}>{muscle}</LighterBadge>)}
+                <Badge>Exercises: {program.exercises.length}</Badge>
+                <Badge>Sets: {program.sets}</Badge>
+                <Badge>Reps: {program.repetitions}</Badge>
+                <Badge>Rest: {program.rest}</Badge>
             </Row>
-
-            <p>{exercise.description}</p>
+            <Row>
+                <Badge>Frequency: {program.frequency}</Badge>
+            </Row>
 
             <HoistedRow>
                 {creatorId === userId && <RedCircle role="button" onClick={() => setIsDeletePromptOpen(true)}><Trash2Icon /></RedCircle>}
-                <PrimaryCircle role="button" onClick={onAdd}><PlusIcon /></PrimaryCircle>
+                <Link to={`/programs/${program.id}`}><PrimaryCircle><EyeIcon /></PrimaryCircle></Link>
             </HoistedRow>
         </Content>
 
         <DeletePrompt
             isOpen={isDeletePromptOpen}
             setIsOpen={setIsDeletePromptOpen}
-            onConfirm={deleteExercise}
+            onConfirm={deleteProgram}
         />
     </Card>
 }
 
 const Card = styled.section`
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     height: 100%;
     border-radius: 0.5rem;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
-const Image = styled.img`
-    height: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 0.5rem 0 0 0.5rem;
-`;
-
 const Content = styled.div`
-    grid-column: span 2 / span 2;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     padding: 1rem;
-
+    
     h2 {
         font-size: 1.5rem;
         font-weight: 600;
@@ -81,6 +70,7 @@ const Content = styled.div`
         font-weight: 400;
     }
 `;
+
 
 const Row = styled.div`
     display: flex;
@@ -95,10 +85,6 @@ const Badge = styled.span`
     color: white;
     font-size: 0.75rem;
     font-weight: 600;
-`;
-
-const LighterBadge = styled(Badge)`
-    background-color: hsl(var(--primary-color) / 60%);
 `;
 
 const HoistedRow = styled(Row)`

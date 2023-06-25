@@ -122,7 +122,7 @@ class ExercisesController extends Controller {
             if (!result) return this.error(res, 500, 'Failed to update exercise');
         }
 
-        return this.success(res, exercise.toJSON(), 201);
+        return this.success(res, exercise.toJSON());
     }
 
     /**

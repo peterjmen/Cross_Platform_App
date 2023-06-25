@@ -24,11 +24,9 @@ export function ProgramPicker({ programs, isOpen, setIsOpen, onSelect }) {
         <Heading>Choose a program</Heading>
 
         <List>
-            {programs.map((program, index, self) => <Program
+            {programs.map(program => <Program
                 key={program.id}
                 role="button"
-                index={index}
-                total={self.length}
                 onClick={() => handleSelect(program)}
             >{program.name}</Program>)}
         </List>
@@ -48,7 +46,7 @@ const List = styled.ul`
     display: flex;
     flex-direction: column;
     list-style: none;
-    margin-top: 1rem;
+    margin: 1rem 0;
     padding: 0;
 `;
 
@@ -59,11 +57,16 @@ const Program = styled.li`
     cursor: pointer;
     border: 1px solid hsl(var(--border-color));
 
-    ${({ index, total }) => {
-        if (index === 0) return 'border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;';
-        if (index === total - 1) return 'border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem;';
-    }}
-
     transition: background-color 0.1s ease-in-out;
     &:hover { background-color: lightgrey; }
+
+    &:first-of-type {
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+    }
+
+    &:last-of-type {
+        border-bottom-left-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+    }
 `;

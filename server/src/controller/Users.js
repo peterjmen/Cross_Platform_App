@@ -106,7 +106,7 @@ class UsersController extends Controller {
             if (!result) return this.error(res, 500, 'Failed to update user');
         }
 
-        return this.success(res, user.toJSON(), 201);
+        return this.success(res, user.toJSON());
     }
 
     /**

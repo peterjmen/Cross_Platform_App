@@ -2,11 +2,11 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { LoginPage } from './pages/login';
 import { RegisterPage } from './pages/register';
+import { ProfilePage } from './pages/profile';
 import { NavigationBar } from './components/navigation';
 import { ExerciseCard } from './components/exercise-card';
 import './default.css';
 import './common.css';
-import { ProfilePage } from './pages/profile';
 
 export function Layout() {
     return <Router>

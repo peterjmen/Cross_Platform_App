@@ -31,7 +31,7 @@ const schema = new Schema(
         timestamps: true,
         toJSON: {
             transform(_, record) {
-                record.id = record._id;
+                record.id ??= record._id?.toString();
                 delete record._id;
                 delete record.__v;
                 delete record.password;
