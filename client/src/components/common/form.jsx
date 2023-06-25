@@ -20,5 +20,5 @@ export const Input = styled.input`
 `;
 
 export const Error = styled.p`
-    color: ${props => props.error ? 'red;' : 'transparent; user-select: none;'}
+    color: ${({ error }) => error ? 'red' : 'transparent; user-select: none'};
 `;

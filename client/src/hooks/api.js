@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 /**
  * Create a URL for the API
  * @param {string} path 
@@ -9,4 +11,28 @@ export function useApiUrl(path, query) {
     if (query) Object.entries(query) //
         .forEach(([key, value]) => url.searchParams.append(key, value));
     return url;
+}
+
+/**
+ * Get the name from local storage
+ */
+export function useUserName() {
+    const name = useMemo(() => localStorage.getItem('name'), []);
+    return name;
+}
+
+/**
+ * Get the id from local storage
+ */
+export function useUserId() {
+    const id = useMemo(() => localStorage.getItem('id'), []);
+    return id;
+}
+
+/**
+ * Get the token from local storage
+ */
+export function useToken() {
+    const token = useMemo(() => localStorage.getItem('token'), []);
+    return token;
 }

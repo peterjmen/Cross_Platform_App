@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { Button } from '../components/button';
-import { Error, Form, Input, Label } from '../components/form';
+import { Button } from '../components/common/button';
+import { Error, Form, Input, Label } from '../components/common/form';
 import { useApiUrl } from '../hooks/api';
 
 export function RegisterPage() {

@@ -1,121 +1,220 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { ExerciseCard } from '../components/exercise-card';
+import { Button } from '../components/common/button';
+import { Heading, Card as _Card, Content as _Content } from '../components/common/card';
 import { EditAccount } from '../components/edit-account';
-import { Button } from '../components/button';
+import { ExerciseCard } from '../components/exercise-card';
 import { ProgramCard } from '../components/program-card';
-import { useApiUrl } from '../hooks/api';
-import { ProgramPicker } from '../components/program-picker';
+import { ProgramPickerPrompt } from '../components/program-picker-prompt';
+import { useApiUrl, useToken, useUserId } from '../hooks/api';
+import { DeletePrompt } from '../components/delete-prompt';
 
 export function ProfilePage() {
-
     const navigate = useNavigate();
-    const id = useMemo(() => localStorage.getItem('id'), []);
-    const token = useMemo(() => localStorage.getItem('token'), []);
+    const id = useUserId();
+    const token = useToken();
 
-    const [isLoading, setIsLoading] = useState(true);
-
-    const [selectedTab, setSelectedTab] = useState('exercises');
-    const [isEditorOpen, setIsEditorOpen] = useState(false);
-    const [isProgramPickerOpen, setIsProgramPickerOpen] = useState(false);
-    const [selectedExercise, setSelectedExercise] = useState(null);
+    // Fetch user, exercises, and programs
 
     const [user, setUser] = useState(null);
     const [exercises, setExercises] = useState(null);
     const [programs, setPrograms] = useState(null);
+    const isLoading = useMemo(() => !user || !exercises || !programs,
+        [user, exercises, programs]);
+
+    const [isEditorOpen, setIsEditorOpen] = useState(false);
+    const [selectedTab, setSelectedTab] = useState('exercises');
 
     const getCurrentUser = useCallback(async () => {
-        const url = new URL('/v0/users/@me', 'http://localhost:3001');
-
-        return fetch(url, { headers: new Headers({ 'Authorization': token }) })
+        return fetch(useApiUrl('users/@me'), { headers: new Headers({ 'Authorization': token }) })
             .then(response => response.json())
             .then(({ success, ...data }) => success ? setUser(data) : null);
     }, [token, setUser]);
 
     const getMyExercises = useCallback(async () => {
-        const url = new URL('/v0/exercises', 'http://localhost:3001');
-        url.searchParams.append('creator', id);
-
-        return fetch(url, { headers: new Headers({ 'Authorization': token }) })
+        return fetch(useApiUrl('exercises', { creator: id }))
             .then(response => response.json())
             .then(data => data.success ? setExercises(data.exercises) : null);
     }, [token, id, setExercises]);
 
     const getMyPrograms = useCallback(async () => {
-        const url = new URL('/v0/programs', 'http://localhost:3001');
-        url.searchParams.append('creator', id);
-
-        return fetch(url, { headers: new Headers({ 'Authorization': token }) })
+        return fetch(useApiUrl('programs', { creator: id }))
             .then(response => response.json())
             .then(data => data.success ? setPrograms(data.programs) : null);
     }, [token, id, setPrograms]);
 
-    const addExerciseToProgram = useCallback(async (program, exercise) => {
-        const copy = program.exercises.map(e => e.id);
-        console.log('pre-push', program.exercises, copy);
-        copy.push(exercise.id);
-        console.log('post-push', copy);
+    useEffect(() => {
+        if (!id || !token) navigate('/login');
+        void Promise.all([getCurrentUser(), getMyExercises(), getMyPrograms()]);
+    }, []);
+
+    // Handle exercise and program actions
+
+    const [isDeletePromptOpen, setIsDeletePromptOpen] = useState(false);
+    const [isPickerPromptOpen, setIsPickerPromptOpen] = useState(false);
+
+    const [selectedExercise, setSelectedExercise] = useState(null);
+    const [selectedProgram, setSelectedProgram] = useState(null);
+
+    const deleteExercise = useCallback(async exercise => {
+        const result = await fetch(useApiUrl(`exercises/${exercise.id}`), {
+            method: 'DELETE',
+            headers: new Headers({ 'Authorization': token }),
+        }).then(response => response.json());
+
+        if (result.success) {
+            setExercises(exercises => exercises
+                .filter(e => e.id !== exercise.id));
+
+            const programExercises = programs.reduce((all, program) => all.concat(program.exercises), []);
+            const exerciseIds = programExercises.map(exercise => exercise.id);
+            if (exerciseIds.includes(exercise.id)) await getMyPrograms();
+        }
+    }, [token, programs, setExercises]);
+
+    const deleteProgram = useCallback(async program => {
+        const result = await fetch(useApiUrl(`programs/${program.id}`), {
+            method: 'DELETE',
+            headers: new Headers({ 'Authorization': token }),
+        }).then(response => response.json());
+
+        if (result.success)
+            setPrograms(programs => programs
+                .filter(p => p.id !== program.id));
+    }, [token, setPrograms]);
+
+    const addExerciseToProgram = useCallback(async (exercise, program) => {
+        const exerciseIds = program.exercises.map(exercise => exercise.id);
+        exerciseIds.push(exercise.id);
 
         const result = await fetch(useApiUrl(`programs/${program.id}`), {
             method: 'PATCH',
-            body: JSON.stringify({ exercises: copy }),
+            body: JSON.stringify({ exercises: exerciseIds }),
             headers: new Headers({
                 'Authorization': token,
                 'Content-Type': 'application/json'
-            })
-        })
-            .then(response => response.json());
+            }),
+        }).then(response => response.json());
 
-        if (result.success) {
-            const newPrograms = programs.map(p => p.id === result.id ? result : p);
-            setPrograms(newPrograms);
-        } else {
-            console.error(result);
-        }
-    }, [token, programs, setPrograms]);
+        if (result.success)
+            setPrograms(programs => programs
+                .map(p => p.id === program.id ? result : p));
+    }, [token, setPrograms, exercises]);
 
-    useEffect(() => {
-        if (!id || !token) return navigate('/login');
-        void Promise.all([getCurrentUser(), getMyExercises(), getMyPrograms()])
-            .finally(() => setIsLoading(false));
-    }, []);
+    const createProgramAndAddExercise = useCallback(async exercise => {
+        // It might be better to use a dialog to ask for the program values, but this is fine for now
+        const result = await fetch(useApiUrl('programs'), {
+            method: 'PUT',
+            body: JSON.stringify({
+                name: `${user.name}'s Program`,
+                description: `A new program for ${user.name}!`,
+                exercises: [exercise.id],
+                sets: 1,
+                repetitions: 1,
+                rest: 1,
+                frequency: 'once a day',
+            }),
+            headers: new Headers({
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }),
+        }).then(response => response.json());
 
-    if (isLoading) return <>Loading...</>
+        if (result.success)
+            setPrograms(programs => [...programs, result]);
+    }, [token, setPrograms, user]);
+
+    if (isLoading) return <div>Loading...</div>;
 
     return <Container>
         <Card>
-            <CardContent>
-                <h2>{user.name}'s Profile</h2>
-            </CardContent>
+            <Content>
+                <Heading>{user.name}'s Profile</Heading>
 
-            <Button onClick={() => setIsEditorOpen(true)} variant="primary">Edit Account</Button>
+                <p>
+                    This is your profile page. Here you can view your created exercises and programs.
+                </p>
+            </Content>
+
+            <Button
+                variant="primary"
+                onClick={() => setIsEditorOpen(true)}
+                style={{ marginRight: '1rem' }}
+            >Edit</Button>
         </Card>
 
-        <EditAccount isOpen={isEditorOpen} setIsOpen={setIsEditorOpen} token={token} {...user} />
+        <EditAccount
+            isOpen={isEditorOpen}
+            setIsOpen={setIsEditorOpen}
+            {...user}
+        />
 
         <TabGroup>
-            <Tab selected={selectedTab === 'exercises'} onClick={() => setSelectedTab('exercises')}>Created Exercises</Tab>
-            <Tab selected={selectedTab === 'programs'} onClick={() => setSelectedTab('programs')}>Created Programs</Tab>
+            <Tab
+                selected={selectedTab === 'exercises'}
+                onClick={() => setSelectedTab('exercises')}
+            >Created Exercises</Tab>
+            <Tab
+                selected={selectedTab === 'programs'}
+                onClick={() => setSelectedTab('programs')}
+            >Created Programs</Tab>
         </TabGroup>
 
         {selectedTab === 'exercises' && <Grid>
-            {exercises.map(exercise => <ExerciseCard key={exercise.id} exercise={exercise} onAdd={() => {
-                setSelectedExercise(exercise);
-                setIsProgramPickerOpen(true);
-            }} />)}
+            {exercises.map(exercise => <ExerciseCard
+                key={exercise.id}
+                exercise={exercise}
+                onAddClick={() => {
+                    setSelectedExercise(exercise);
+                    setIsPickerPromptOpen(true);
+                }}
+                onDeleteClick={() => {
+                    setSelectedExercise(exercise);
+                    setIsDeletePromptOpen(true);
+                }}
+            />)}
         </Grid>}
 
         {selectedTab === 'programs' && <Grid>
-            {programs.map(program => <ProgramCard key={program.id} program={program} />)}
+            {programs.map(program => <ProgramCard
+                key={program.id}
+                program={program}
+                onDeleteClick={() => {
+                    setSelectedProgram(program);
+                    setIsDeletePromptOpen(true);
+                }}
+            />)}
         </Grid>}
 
-        {programs && <ProgramPicker
+        <DeletePrompt
+            isOpen={isDeletePromptOpen}
+            setIsOpen={setIsDeletePromptOpen}
+            onConfirm={() => {
+                // I dont think this will break in the case of delete vs picker
+                if (selectedTab === 'exercises') {
+                    deleteExercise(selectedExercise);
+                    setSelectedExercise(null);
+                } else if (selectedTab === 'programs') {
+                    deleteProgram(selectedProgram);
+                    setSelectedProgram(null);
+                }
+            }}
+        />
+
+        <ProgramPickerPrompt
             programs={programs}
-            isOpen={isProgramPickerOpen}
-            setIsOpen={setIsProgramPickerOpen}
-            onSelect={program => addExerciseToProgram(program, selectedExercise)}
-        />}
+            isOpen={isPickerPromptOpen}
+            setIsOpen={setIsPickerPromptOpen}
+            onSelect={program => {
+                addExerciseToProgram(selectedExercise, program);
+                setSelectedExercise(null);
+            }}
+            onNewProgramClick={() => {
+                createProgramAndAddExercise(selectedExercise)
+                setSelectedExercise(null);
+            }}
+        />
     </Container>
 }
 
@@ -125,30 +224,19 @@ const Container = styled.div`
     gap: 1rem;
 `;
 
-const Card = styled.section`
+const Card = styled(_Card)`
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     margin-top: 1rem;
-    padding: 1rem;
     width: 100%;
-    border-radius: 0.5rem;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
-const CardContent = styled.div`
-    display: flex;
-    flex-direction: column;
+const Content = styled(_Content)`
     width: 100%;
-
-    h2 {
-        margin: 0;
-        margin-bottom: 0.5rem;
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
+    justify-content: center;
+    width: 100%;
 `;
 
 const TabGroup = styled.div`

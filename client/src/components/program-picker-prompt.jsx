@@ -1,26 +1,25 @@
 import { styled } from 'styled-components';
-import { Dialog } from './dialog';
-import { Button } from './button';
+import { Button } from './common/button';
+import { Dialog } from './common/dialog';
+import { Heading } from './common/card';
 
 /*
-interface ProgramPickerProps {
+interface ProgramPickerPromptProps {
     programs: Program[];
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
     onSelect: (program: Program) => void;
+    onNewProgramClick: () => void;
 }
 */
 
-export function ProgramPicker({ programs, isOpen, setIsOpen, onSelect }) {
-    function handleSelect(program) {
-        onSelect(program);
+export function ProgramPickerPrompt({ programs, isOpen, setIsOpen, onSelect, onNewProgramClick }) {
+    const handleSelect = program => {
         setIsOpen(false);
-    }
+        onSelect(program);
+    };
 
-    return <Dialog
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-    >
+    return <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Heading>Choose a program</Heading>
 
         <List>
@@ -31,16 +30,12 @@ export function ProgramPicker({ programs, isOpen, setIsOpen, onSelect }) {
             >{program.name}</Program>)}
         </List>
 
-        {/* Maybe just create a program with a default name then call the handleSelect method */}
-        <Button variant="primary" style={{ width: '100%' }}>Create a new program</Button>
+        <Button variant="primary" style={{ width: '100%' }} onClick={() => {
+            setIsOpen(false);
+            onNewProgramClick();
+        }}>Create a new program</Button>
     </Dialog>
 }
-
-const Heading = styled.h3`
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0;
-`;
 
 const List = styled.ul`
     display: flex;

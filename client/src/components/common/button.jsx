@@ -2,7 +2,7 @@ import { styled, css } from 'styled-components';
 
 /*
 interface ButtonProps {
-    variant: 'primary' | 'primary-inverted';
+    variant: 'primary' | 'primary-inverted' | 'danger';
 }
 */
 
@@ -24,5 +24,10 @@ Button.variants = {
         background-color: white;
         color: black;
         &:hover { background-color: hsl(0 0% 100% / 90%); };
+    `,
+    danger: css`
+        background-color: red;
+        color: white;
+        &:hover { background-color: hsl(0 100% 50% / 90%); };
     `,
 };

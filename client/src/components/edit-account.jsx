@@ -1,29 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { styled } from 'styled-components';
-import { Dialog } from './dialog';
-import { Button } from './button';
-import { useApiUrl } from '../hooks/api';
-import { Error, Form, Input, Label } from './form';
+import { useApiUrl, useToken } from '../hooks/api';
+import { Button } from './common/button';
+import { Dialog } from './common/dialog';
+import { Error, Form, Input, Label } from './common/form';
+import { Heading } from './common/card';
 
 /*
 interface EditAccountProps {
-    isOpen: boolean;
-    setIsOpen: () => void;
     email: string;
     name: string;
-    token: string;
+    isOpen: boolean;
+    setIsOpen: () => void;
 }
 */
 
-export function EditAccount({ isOpen, setIsOpen, token, ...defaultValues }) {
+export function EditAccount({ isOpen, setIsOpen, ...defaultValues }) {
     const navigate = useNavigate();
+    const token = useToken();
+
     const { formState: { errors }, ...form } = useForm({ defaultValues });
     const [error, setError] = useState(null);
 
-    async function updateUser() {
-        return fetch(useApiUrl('users/@me'), {
+    const updateUser = useCallback(async () => {
+        const result = await fetch(useApiUrl('users/@me'), {
             method: 'PATCH',
             // Replace all the empty strings with undefined
             body: JSON.stringify(form.getValues(), (_, value) => value || undefined),
@@ -31,14 +32,18 @@ export function EditAccount({ isOpen, setIsOpen, token, ...defaultValues }) {
                 'Content-Type': 'application/json',
                 'Authorization': token,
             })
-        })
-            .then(response => response.json())
-            .then(data => {
-                localStorage.setItem('name', data.name);
-                navigate(0);
-            })
-            .finally(() => setIsOpen(false))
-    }
+        }).then(response => response.json());
+
+        if (result.success) {
+            localStorage.setItem('name', result.name);
+            // Refresh the page to update the name in the header
+            navigate(0);
+        } else {
+            setError(result.details);
+        }
+
+        setIsOpen(false);
+    }, [token]);
 
     useEffect(() => {
         if (errors.name) setError('Name is a required field');
@@ -48,7 +53,7 @@ export function EditAccount({ isOpen, setIsOpen, token, ...defaultValues }) {
     }, [errors.name, errors.email, errors.password]);
 
     return <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <Heading>Edit Account Information</Heading>
+        <Heading>Edit Account</Heading>
 
         <Form onSubmit={form.handleSubmit(updateUser)}>
             <Label htmlFor="edit-name">Name</Label>
@@ -60,15 +65,9 @@ export function EditAccount({ isOpen, setIsOpen, token, ...defaultValues }) {
             <Label htmlFor="edit-password">Password</Label>
             <Input id="edit-password" type="password" {...form.register('password')} placeholder="Password" />
 
-            <Button type="submit" variant="primary" style={{ width: '100%' }}>Save</Button>
+            <Button type="submit" variant="primary">Save</Button>
 
-            <Error error={error}>{error ?? "Hello world"}</Error>
+            {error && <Error>{error}</Error>}
         </Form>
     </Dialog>
 }
-
-const Heading = styled.h3`
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0;
-`;
