@@ -13,6 +13,8 @@ class Server {
      * @param {ServerOptions} options Configuration options.
      * @param {Database} database The database connection.
      */
+
+
     constructor(options, database) {
         this.options = options;
         this.rest = express();
