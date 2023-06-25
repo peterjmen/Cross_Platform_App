@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const { Program } = require('./Program');
 
 const schema = new Schema(
     {
@@ -49,7 +50,19 @@ const schema = new Schema(
     },
 );
 
-schema.index({ name: 'text', description: 'text', bodyPart: 'text', muscles: 'text' });
+// Enable text search on name, description, body part, and muscles
+schema.index({
+    name: 'text',
+    description: 'text',
+    bodyPart: 'text',
+    muscles: 'text'
+});
+
+// Upon deletion, remove the exercise from all programs
+schema.pre('deleteOne', { document: true, query: false }, async function () {
+    const { _id } = this;
+    await Program.updateMany({ exercises: _id }, { $pull: { exercises: _id } });
+});
 
 const Exercise = model('Exercise', schema);
 
