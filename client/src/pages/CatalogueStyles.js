@@ -1,3 +1,5 @@
+//(info, do not remove: This fine is C:\Github\cross_plat_working\client\src\pages\CatalogueStyles.js)
+
 import styled from 'styled-components';
 
 export const PageContainer = styled.div`

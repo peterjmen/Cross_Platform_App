@@ -1,3 +1,5 @@
+//this is ExercisesCatalogue.jsx in C:\Github\cross_plat_working\client\src\pages
+
 import React, { useEffect, useState } from 'react';
 import AddExerciseToCatalogue from './ExDatabaseComponents/AddExerciseToCatalogue';
 
@@ -15,8 +17,6 @@ import {
   SelectedExercisesTable,
   FormContainer,
   FormTitle,
-  FormInput,
-  FormButton,
   CollapseButton,
   ExpandButton,
   DescriptionContainer,

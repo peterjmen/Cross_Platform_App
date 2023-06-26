@@ -1,9 +1,13 @@
+//(info, do not remove: This file is: C:\Github\cross_plat_working\client\src\layout.jsx)
+
 import {Route, BrowserRouter as Router, Routes} from 'react-router-dom';
 import styled from 'styled-components';
 import {NavigationBar} from './components/navigation';
 import {LoginPage} from './pages/login';
 import {RegisterPage} from './pages/register';
 import {ExercisesCatalogue} from './pages/ExercisesCatalogue';
+import CurrentProgram from './pages/CurrentProgram';
+
 import './default.css';
 import './common.css';
 
@@ -56,6 +60,9 @@ export function Layout() {
                         path='/ExercisesCatalogue'
                         element={<ExercisesCatalogue />}
                     />
+                    <Route path="/CurrentProgram" element={<CurrentProgram />} />
+
+
                 </Routes>
             </Main>
         </Router>
