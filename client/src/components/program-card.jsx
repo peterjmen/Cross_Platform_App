@@ -35,8 +35,12 @@ export function ProgramCard({ program, onDeleteClick }) {
                 <Badge>Frequency: {program.frequency}</Badge>
             </Row>
 
+            <p>
+                {program.description}
+            </p>
+
             <HoistedRow>
-                {isCreator && <Circle role="button" variant="danger" onClick={onDeleteClick}><Trash2Icon /></Circle>}
+                {onDeleteClick && isCreator && <Circle role="button" variant="danger" onClick={onDeleteClick}><Trash2Icon /></Circle>}
                 <Link to={`/programs/${program.id}`}><Circle variant="primary"><EyeIcon /></Circle></Link>
             </HoistedRow>
         </Content>
