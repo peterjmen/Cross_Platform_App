@@ -112,7 +112,6 @@ class ProgramsController extends Controller {
             return this.error(res, 403, 'You do not have permission to update this program');
 
         let { name, description, exercises: exerciseIds, sets, repetitions, rest, frequency } = req.body;
-        exerciseIds = exerciseIds?.filter((v, i, a) => a.indexOf(v) === i && isValidObjectId(v));
 
         if (!isNullish(name) && (typeof name !== 'string' || name.length === 0))
             return this.error(res, 400, 'Provided name is invalid');
@@ -145,10 +144,11 @@ class ProgramsController extends Controller {
             return this.error(res, 400, 'Provided frequency is invalid');
 
         if (!isNullish(exerciseIds)) {
-            const exercises = await Exercise.find({ _id: { $in: exerciseIds } });
-            if (exercises.length !== exerciseIds.length)
+            const objects = await Exercise.find({ _id: { $in: exerciseIds } });
+            const exercises = exerciseIds.map(id => objects.find(e => e.id === id));
+            if (exercises.some(e => !e))
                 return this.error(res, 400, 'Provided exercises are invalid');
-            program.exercises = exercises.map(e => e.id);
+            program.exercises = exercises.map(e => e._id);
         }
 
         if (program.isModified()) {
@@ -156,7 +156,7 @@ class ProgramsController extends Controller {
             if (!result) return this.error(res, 500, 'Failed to update program');
         }
 
-        return this.success(res, program.toJSON(), 201);
+        return this.success(res, program.toJSON());
     }
 
     /**
