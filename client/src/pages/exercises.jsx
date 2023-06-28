@@ -10,6 +10,7 @@ import { Row } from '../components/common/row';
 import { ExerciseCard } from '../components/exercise-card';
 import { ProgramPickerPrompt } from '../components/prompts/program-picker';
 import { useApiUrl, useToken, useUserId } from '../hooks/api';
+import { CreateExercisePrompt } from '../components/prompts/create-exercise';
 
 export function ExercisesPage() {
     // Search exercises
@@ -19,6 +20,9 @@ export function ExercisesPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     // 'null' indicates loading, empty array indicates no results
     const [exercises, setExercises] = useState(null);
+    const [isCreateExercisePromptOpen, setIsCreateExercisePromptOpen] = useState(false);
+    const handleCreateExerciseSuccess = (result) => {console.log('Exercise created:', result);};
+
 
     const searchExercises = useCallback(async ({ query }) => {
         setExercises(null);
@@ -68,6 +72,7 @@ export function ExercisesPage() {
             <Row style={{ flexWrap: 'unset' }}>
                 <Input id="search-exercises" type="text" {...form.register('query')} placeholder="Type your search..." />
                 <Button type="submit" variant="primary">Search</Button>
+                <Button role="button" variant="primary" onClick={() => setIsCreateExercisePromptOpen(true)}>Create Exercise</Button>
             </Row>
         </Form>
 
@@ -91,6 +96,11 @@ export function ExercisesPage() {
             onSuccess={(_, exercise) => setExercises(exercises => exercises.map(e => e.id === exercise.id ? exercise : e))}
             isOpen={isPickerPromptOpen}
             setIsOpen={setIsPickerPromptOpen}
+        />
+        <CreateExercisePrompt
+        onSuccess={handleCreateExerciseSuccess}
+        isOpen={isCreateExercisePromptOpen}
+        setIsOpen={setIsCreateExercisePromptOpen}
         />
     </Container>
 }
