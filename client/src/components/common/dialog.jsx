@@ -12,12 +12,15 @@ interface DialogProps {
 export function Dialog({ isOpen, onClose, children }) {
     const dialogRef = useRef(null);
 
+    // Whenever the isOpen prop changes, open the dialog
     useEffect(() => {
+        // Ensure it is closed before opening
         dialogRef.current.close();
         if (isOpen) dialogRef.current.showModal();
     }, [isOpen]);
 
     const onClick = useCallback(({ target }) => {
+        // When the backdrop is clicked, close the dialog
         if (target === dialogRef.current) onClose();
     }, [onClose]);
 

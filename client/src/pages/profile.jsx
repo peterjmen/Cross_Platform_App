@@ -3,12 +3,15 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Button } from '../components/common/button';
 import { Heading, Card as _Card, Content as _Content } from '../components/common/card';
-import { EditAccount } from '../components/edit-account';
+import { Grid } from '../components/common/grid';
 import { ExerciseCard } from '../components/exercise-card';
 import { ProgramCard } from '../components/program-card';
-import { ProgramPickerPrompt } from '../components/program-picker-prompt';
+import { DeleteExercisePrompt } from '../components/prompts/delete-exercise';
+import { DeleteProgramPrompt } from '../components/prompts/delete-program';
+import { EditAccountPrompt } from '../components/prompts/edit-account';
+import { ProgramPickerPrompt } from '../components/prompts/program-picker';
 import { useApiUrl, useToken, useUserId } from '../hooks/api';
-import { DeletePrompt } from '../components/delete-prompt';
+import { EditExercisePrompt } from '../components/prompts/edit-exercise';
 
 export function ProfilePage() {
     const navigate = useNavigate();
@@ -27,7 +30,7 @@ export function ProfilePage() {
     let rawTab = searchParams.get('tab');
     if (!['exercises', 'programs'].includes(rawTab)) rawTab = 'exercises';
     const [selectedTab, setSelectedTab] = useState(rawTab);
-    const [isEditorOpen, setIsEditorOpen] = useState(false);
+    const [isAccountEditProgramOpen, setIsAccountEditProgramOpen] = useState(false);
 
     useEffect(() => {
         setSearchParams({ tab: selectedTab });
@@ -58,79 +61,13 @@ export function ProfilePage() {
 
     // Handle exercise and program actions
 
-    const [isDeletePromptOpen, setIsDeletePromptOpen] = useState(false);
-    const [isPickerPromptOpen, setIsPickerPromptOpen] = useState(false);
-
     const [selectedExercise, setSelectedExercise] = useState(null);
+    const [isPickerPromptOpen, setIsPickerPromptOpen] = useState(false);
+    const [isEditExercisePromptOpen, setIsEditExercisePromptOpen] = useState(false);
+    const [isDeleteExercisePromptOpen, setIsDeleteExercisePromptOpen] = useState(false);
+
     const [selectedProgram, setSelectedProgram] = useState(null);
-
-    const deleteExercise = useCallback(async exercise => {
-        const result = await fetch(useApiUrl(`exercises/${exercise.id}`), {
-            method: 'DELETE',
-            headers: new Headers({ 'Authorization': token }),
-        }).then(response => response.json());
-
-        if (result.success) {
-            setExercises(exercises => exercises
-                .filter(e => e.id !== exercise.id));
-
-            const programExercises = programs.reduce((all, program) => all.concat(program.exercises), []);
-            const exerciseIds = programExercises.map(exercise => exercise.id);
-            if (exerciseIds.includes(exercise.id)) await getMyPrograms();
-        }
-    }, [token, programs, setExercises]);
-
-    const deleteProgram = useCallback(async program => {
-        const result = await fetch(useApiUrl(`programs/${program.id}`), {
-            method: 'DELETE',
-            headers: new Headers({ 'Authorization': token }),
-        }).then(response => response.json());
-
-        if (result.success)
-            setPrograms(programs => programs
-                .filter(p => p.id !== program.id));
-    }, [token, setPrograms]);
-
-    const addExerciseToProgram = useCallback(async (exercise, program) => {
-        const exerciseIds = program.exercises.map(exercise => exercise.id);
-        exerciseIds.push(exercise.id);
-
-        const result = await fetch(useApiUrl(`programs/${program.id}`), {
-            method: 'PATCH',
-            body: JSON.stringify({ exercises: exerciseIds }),
-            headers: new Headers({
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            }),
-        }).then(response => response.json());
-
-        if (result.success)
-            setPrograms(programs => programs
-                .map(p => p.id === program.id ? result : p));
-    }, [token, setPrograms, exercises]);
-
-    const createProgramAndAddExercise = useCallback(async exercise => {
-        // It might be better to use a dialog to ask for the program values, but this is fine for now
-        const result = await fetch(useApiUrl('programs'), {
-            method: 'PUT',
-            body: JSON.stringify({
-                name: `${user.name}'s Program`,
-                description: `A new program for ${user.name}!`,
-                exercises: [exercise.id],
-                sets: 1,
-                repetitions: 1,
-                rest: 1,
-                frequency: 'once a day',
-            }),
-            headers: new Headers({
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            }),
-        }).then(response => response.json());
-
-        if (result.success)
-            setPrograms(programs => [...programs, result]);
-    }, [token, setPrograms, user]);
+    const [isDeleteProgramPromptOpen, setIsDeleteProgramPromptOpen] = useState(false);
 
     if (isLoading) return <div>Loading...</div>;
 
@@ -146,15 +83,16 @@ export function ProfilePage() {
 
             <Button
                 variant="primary"
-                onClick={() => setIsEditorOpen(true)}
+                onClick={() => setIsAccountEditProgramOpen(true)}
                 style={{ marginRight: '1rem' }}
             >Edit</Button>
         </Card>
 
-        <EditAccount
-            isOpen={isEditorOpen}
-            setIsOpen={setIsEditorOpen}
-            {...user}
+        <EditAccountPrompt
+            user={user}
+            onSuccess={user => setUser(user)}
+            isOpen={isAccountEditProgramOpen}
+            setIsOpen={setIsAccountEditProgramOpen}
         />
 
         <TabGroup>
@@ -176,9 +114,13 @@ export function ProfilePage() {
                     setSelectedExercise(exercise);
                     setIsPickerPromptOpen(true);
                 }}
+                onEditClick={() => {
+                    setSelectedExercise(exercise);
+                    setIsEditExercisePromptOpen(true);
+                }}
                 onDeleteClick={() => {
                     setSelectedExercise(exercise);
-                    setIsDeletePromptOpen(true);
+                    setIsDeleteExercisePromptOpen(true);
                 }}
             />)}
         </Grid>}
@@ -189,38 +131,44 @@ export function ProfilePage() {
                 program={program}
                 onDeleteClick={() => {
                     setSelectedProgram(program);
-                    setIsDeletePromptOpen(true);
+                    setIsDeleteExercisePromptOpen(true);
                 }}
             />)}
         </Grid>}
 
-        <DeletePrompt
-            isOpen={isDeletePromptOpen}
-            setIsOpen={setIsDeletePromptOpen}
-            onConfirm={() => {
-                // I dont think this will break in the case of delete vs picker
-                if (selectedTab === 'exercises') {
-                    deleteExercise(selectedExercise);
-                    setSelectedExercise(null);
-                } else if (selectedTab === 'programs') {
-                    deleteProgram(selectedProgram);
-                    setSelectedProgram(null);
-                }
-            }}
-        />
-
         <ProgramPickerPrompt
+            exercise={selectedExercise}
             programs={programs}
+            onSuccess={(_, exercise) => setExercises(exercises => exercises.map(e => e.id === exercise.id ? exercise : e))}
             isOpen={isPickerPromptOpen}
             setIsOpen={setIsPickerPromptOpen}
-            onSelect={program => {
-                addExerciseToProgram(selectedExercise, program);
-                setSelectedExercise(null);
+        />
+
+        <EditExercisePrompt
+            exercise={selectedExercise}
+            onSuccess={(_, exercise) => setExercises(exercises => exercises.map(e => e.id === exercise.id ? exercise : e))}
+            isOpen={isEditExercisePromptOpen}
+            setIsOpen={setIsEditExercisePromptOpen}
+        />
+
+        <DeleteExercisePrompt
+            exercise={selectedExercise}
+            onSuccess={exercise => {
+                setExercises(exercises => exercises.filter(e => e.id !== exercise.id));
+
+                const programExercises = programs.reduce((all, program) => all.concat(program.exercises), []);
+                const exerciseIds = programExercises.map(exercise => exercise.id);
+                if (exerciseIds.includes(exercise.id)) getMyPrograms();
             }}
-            onNewProgramClick={() => {
-                createProgramAndAddExercise(selectedExercise)
-                setSelectedExercise(null);
-            }}
+            isOpen={isDeleteExercisePromptOpen}
+            setIsOpen={setIsDeleteExercisePromptOpen}
+        />
+
+        <DeleteProgramPrompt
+            program={selectedProgram}
+            onSuccess={program => setPrograms(programs => programs.filter(p => p.id !== program.id))}
+            isOpen={isDeleteProgramPromptOpen}
+            setIsOpen={setIsDeleteProgramPromptOpen}
         />
     </Container>
 }
@@ -229,6 +177,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding-top: 1rem;
 `;
 
 const Card = styled(_Card)`
@@ -236,7 +185,6 @@ const Card = styled(_Card)`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-top: 1rem;
     width: 100%;
 `;
 
@@ -278,10 +226,4 @@ const Tab = styled.span`
     transition: background-color 0.2s ease-in-out;
     &:hover { background-color: #F0F8FF; }
     `}    
-`;
-
-const Grid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
 `;

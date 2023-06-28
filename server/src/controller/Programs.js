@@ -47,8 +47,6 @@ class ProgramsController extends Controller {
             return this.error(res, 400, 'Provided description is invalid');
 
         if (isNullish(exerciseIds)) return this.error(res, 400, 'Exercises are required');
-        if (!Array.isArray(exerciseIds) || exerciseIds.length === 0)
-            return this.error(res, 400, 'Exercises must have at least one exercise');
         if (exerciseIds.some(id => !isValidObjectId(id)))
             return this.error(res, 400, 'Provided exercises are invalid');
 
@@ -122,8 +120,6 @@ class ProgramsController extends Controller {
         if (!isNullish(description)) program.description = description;
 
         if (!isNullish(exerciseIds)) {
-            if (!Array.isArray(exerciseIds) || exerciseIds.length === 0)
-                return this.error(res, 400, 'Exercises must have at least one exercise');
             if (exerciseIds.some(id => !isValidObjectId(id)))
                 return this.error(res, 400, 'Provided exercises are invalid');
         }
