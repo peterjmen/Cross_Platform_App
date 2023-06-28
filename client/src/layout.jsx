@@ -3,8 +3,10 @@ import { styled } from 'styled-components';
 import { LoginPage } from './pages/login';
 import { RegisterPage } from './pages/register';
 import { ProfilePage } from './pages/profile';
+import { ExercisesPage } from './pages/exercises';
 import { NavigationBar } from './components/navigation';
-import { ExerciseCard } from './components/exercise-card';
+import { ProgramsPage } from './pages/programs';
+import { ProgramPage } from './pages/program/[id]';
 import './default.css';
 import './common.css';
 
@@ -19,41 +21,9 @@ export function Layout() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/profile" element={<Container><ProfilePage /></Container>} />
 
-                <Route path="/exercises" element={<Container>
-                    {/* NOTE: JUST AN EXAMPLE */}
-
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-                        gridGap: '1rem',
-                        padding: '1rem',
-                    }}>
-                        <ExerciseCard exercise={{
-                            name: 'Push-ups',
-                            description: 'Start in a plank position with your hands shoulder-width apart.',
-                            bodyPart: 'Upper body',
-                            imageUrl: 'https://images.everydayhealth.com/images/consisten-exercise-helps-anxiety-and-stress-1440x810.jpg',
-                            muscles: ['Chest', 'Shoulders', 'Triceps'],
-                        }} programs={[
-                            { id: 1, name: 'Program 1' },
-                            { id: 2, name: 'Program 2' },
-                            { id: 3, name: 'Program 3' },
-                        ]} />
-                        <ExerciseCard exercise={{
-                            name: 'Push-ups',
-                            description: 'Start in a plank position with your hands shoulder-width apart.',
-                            bodyPart: 'Upper body',
-                            imageUrl: 'https://images.everydayhealth.com/images/consisten-exercise-helps-anxiety-and-stress-1440x810.jpg',
-                            muscles: ['Chest', 'Shoulders', 'Triceps'],
-                        }} programs={[
-                            { id: 1, name: 'Program 1' },
-                            { id: 2, name: 'Program 2' },
-                            { id: 3, name: 'Program 3' },
-                        ]} />
-                    </div>
-
-                    {/* NOTE: JUST AN EXAMPLE */}
-                </Container>} />
+                <Route path="/exercises" element={<Container><ExercisesPage /></Container>} />
+                <Route path="/programs" element={<Container><ProgramsPage /></Container>} />
+                <Route path="/programs/:id" element={<Container><ProgramPage /></Container>} />
             </Routes>
         </Main>
     </Router>;

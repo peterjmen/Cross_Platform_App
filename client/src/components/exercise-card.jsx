@@ -1,9 +1,9 @@
+import { PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { useMemo } from 'react';
 import { styled } from 'styled-components';
-import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { useUserId } from '../hooks/api';
 import { Badge, LighterBadge } from './common/badge';
-import { Card as _Card, Content as _Content, Heading } from './common/card';
+import { Heading, Card as _Card, Content as _Content } from './common/card';
 import { Circle } from './common/circle';
 import { HoistedRow, Row } from './common/row';
 
@@ -11,11 +11,12 @@ import { HoistedRow, Row } from './common/row';
 interface ExerciseCardProps {
     exercise: Exercise;
     onAddClick: () => void;
+    onEditClick: () => void;
     onDeleteClick: () => void;
 }
 */
 
-export function ExerciseCard({ exercise, onAddClick, onDeleteClick }) {
+export function ExerciseCard({ exercise, onAddClick, onEditClick, onDeleteClick }) {
     // Only show the delete button if the user is the creator of the exercise
     const userId = useUserId();
     const creatorId = useMemo(() => exercise.creator['id'] ? exercise.creator.id : exercise.creator, [exercise.creator]);
@@ -36,6 +37,7 @@ export function ExerciseCard({ exercise, onAddClick, onDeleteClick }) {
 
             <HoistedRow>
                 {onDeleteClick && isCreator && <Circle role="button" variant="danger" onClick={onDeleteClick}><Trash2Icon /></Circle>}
+                {onEditClick && isCreator && <Circle role="button" variant="primary" onClick={onEditClick}><PencilIcon /></Circle>}
                 {onAddClick && <Circle role="button" variant="primary" onClick={onAddClick}><PlusIcon /></Circle>}
             </HoistedRow>
         </Content>

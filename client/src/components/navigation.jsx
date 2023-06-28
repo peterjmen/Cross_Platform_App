@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Logo } from './logo';
-import { Button } from './common/button';
 import { styled } from 'styled-components';
+import { Button } from './common/button';
+import { Logo } from './logo';
 
 export function NavigationBar() {
     const location = useLocation();
@@ -26,7 +26,6 @@ export function NavigationBar() {
 
         <Nav>
             <NavLink to="/">Home</NavLink>
-            <NavLink to="/templates">Templates</NavLink>
             <NavLink to="/exercises">Exercises</NavLink>
             <NavLink to="/programs">Programs</NavLink>
 
@@ -44,14 +43,16 @@ export function NavigationBar() {
 }
 
 const Header = styled.header`
-    position: fixed; top: 0;
+    position: fixed;
+    top: 0;
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 56px;
     width: 100vw;
     padding: 8px;
-    background-color: hsl(var(--background-color) / 60%);
+    background-color: hsl(var(--background-color));
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
