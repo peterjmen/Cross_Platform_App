@@ -1,3 +1,4 @@
+// Layout.jsx
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { LoginPage } from './pages/login';
@@ -7,26 +8,28 @@ import { ExercisesPage } from './pages/exercises';
 import { NavigationBar } from './components/navigation';
 import { ProgramsPage } from './pages/programs';
 import { ProgramPage } from './pages/program/[id]';
+import { HomePage } from './pages/home'; // Import the HomePage component
 import './default.css';
 import './common.css';
 
 export function Layout() {
-    return <Router>
-        <NavigationBar />
+    return (
+        <Router>
+            <NavigationBar />
 
-        <Main>
-            <Routes>
-
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/profile" element={<Container><ProfilePage /></Container>} />
-
-                <Route path="/exercises" element={<Container><ExercisesPage /></Container>} />
-                <Route path="/programs" element={<Container><ProgramsPage /></Container>} />
-                <Route path="/programs/:id" element={<Container><ProgramPage /></Container>} />
-            </Routes>
-        </Main>
-    </Router>;
+            <Main>
+                <Routes>
+                    <Route path="/" element={<Container><HomePage /></Container>} /> {/* Home Page Route */}
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/profile" element={<Container><ProfilePage /></Container>} />
+                    <Route path="/exercises" element={<Container><ExercisesPage /></Container>} />
+                    <Route path="/programs" element={<Container><ProgramsPage /></Container>} />
+                    <Route path="/programs/:id" element={<Container><ProgramPage /></Container>} />
+                </Routes>
+            </Main>
+        </Router>
+    );
 }
 
 const Main = styled.main`
