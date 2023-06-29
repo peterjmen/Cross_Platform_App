@@ -30,11 +30,11 @@ class ExercisesController extends Controller {
     /**
      * Create a brand new exercise.
      * @endpoint PUT `/exercises`
-     * @param {import('express').Request<any, any, { name: string; description: string; bodyPart: string; imageUrl: string; muscles: string[] }>} req
+     * @param {import('express').Request<any, any, { name: string; description: string; bodyPart: string; imageUrl: string; muscles: string[]; sets: number; repetitions: number; rest: number; frequency: string; }>} req
      * @param {import('express').Response} res
      */
     async createExercise(req, res) {
-        const { name, description, bodyPart, imageUrl, muscles } = req.body;
+        const { name, description, bodyPart, imageUrl, muscles, sets, repetitions, rest, frequency } = req.body;
 
         if (isNullish(name)) return this.error(res, 400, 'Name is required');
         if (typeof name !== 'string' || name.length === 0)
@@ -55,6 +55,22 @@ class ExercisesController extends Controller {
         if (isNullish(muscles)) return this.error(res, 400, 'Muscles are required');
         if (!Array.isArray(muscles) || muscles.length === 0)
             return this.error(res, 400, 'Provided muscles are invalid');
+
+        if (isNullish(sets)) return this.error(res, 400, 'Sets are required');
+        if (typeof sets !== 'number' || sets < 1)
+            return this.error(res, 400, 'Sets must be a number greater than 0');
+
+        if (isNullish(repetitions)) return this.error(res, 400, 'Repetitions are required');
+        if (typeof repetitions !== 'number' || repetitions < 1)
+            return this.error(res, 400, 'Repetitions must be a number greater than 0');
+
+        if (isNullish(rest)) return this.error(res, 400, 'Rest is required');
+        if (typeof rest !== 'number' || rest < 1)
+            return this.error(res, 400, 'Rest must be a number greater than 0');
+
+        if (isNullish(frequency)) return this.error(res, 400, 'Frequency is required');
+        if (typeof frequency !== 'string' || frequency.length === 0)
+            return this.error(res, 400, 'Provided frequency is invalid');
 
         return Exercise.create({
             creator: req.user.id,
@@ -82,7 +98,7 @@ class ExercisesController extends Controller {
     /**
      * Update an existing exercise.
      * @endpoint PATCH `/exercises/:id`
-     * @param {import('express').Request<{ id: string; }, any, Partial<{ name: string; description: string; bodyPart: string; imageUrl: string; muscles: string[] }>>} req
+     * @param {import('express').Request<{ id: string; }, any, Partial<{ name: string; description: string; bodyPart: string; imageUrl: string; muscles: string[]; sets: number; repetitions: number; rest: number; frequency: string; }>>} req
      * @param {import('express').Response} res
      */
     async updateExercise(req, res) {
@@ -116,6 +132,21 @@ class ExercisesController extends Controller {
         if (!isNullish(muscles) && (!Array.isArray(muscles) || muscles.length === 0))
             return this.error(res, 400, 'Provided muscles are invalid');
         if (!isNullish(muscles)) exercise.muscles = muscles;
+
+        if (!isNullish(sets) && (typeof sets !== 'number' || sets < 1))
+            return this.error(res, 400, 'Sets must be a number greater than 0');
+        if (!isNullish(sets)) program.sets = sets;
+
+        if (!isNullish(repetitions) && (typeof repetitions !== 'number' || repetitions < 1))
+            return this.error(res, 400, 'Repetitions must be a number greater than 0');
+        if (!isNullish(repetitions)) program.repetitions = repetitions;
+
+        if (!isNullish(rest) && (typeof rest !== 'number' || rest < 1))
+            return this.error(res, 400, 'Rest must be a number greater than 0');
+        if (!isNullish(rest)) program.rest = rest;
+
+        if (!isNullish(frequency) && (typeof frequency !== 'string' || frequency.length === 0))
+            return this.error(res, 400, 'Provided frequency is invalid');
 
         if (exercise.isModified()) {
             const result = await exercise.save().catch(() => null);

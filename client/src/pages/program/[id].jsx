@@ -44,13 +44,6 @@ export function ProgramPage() {
                 <Heading>{program.name}</Heading>
 
                 <p>{program.description}</p>
-
-                <Row>
-                    <Badge>Sets: {program.sets}</Badge>
-                    <Badge>Reps: {program.repetitions}</Badge>
-                    <Badge>Rest: {ms(program.rest * 1000)}</Badge>
-                    <Badge>Frequency: {program.frequency}</Badge>
-                </Row>
             </Content>
 
             {isCreator && <Button
@@ -67,11 +60,18 @@ export function ProgramPage() {
             setIsOpen={setIsEditor}
         />
 
-        {program.exercises.map((exercise, index) => <Step key={exercise.id}>
+        {program.exercises.map((exercise, index) => <Step key={`${exercise.id}-${index}`}>
             <Content>
                 <Heading>{index + 1}. {exercise.name}</Heading>
 
                 <p>{exercise.description}</p>
+
+                <Row>
+                    <Badge>Sets: {exercise.sets}</Badge>
+                    <Badge>Reps: {exercise.repetitions}</Badge>
+                    <Badge>Rest: {ms(exercise.rest * 1000)}</Badge>
+                    <Badge>Freq: {exercise.frequency}</Badge>
+                </Row>
 
                 <HoistedRow>
                     {isCreator && <Circle variant="danger" onClick={() => {

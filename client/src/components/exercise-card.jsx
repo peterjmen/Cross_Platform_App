@@ -1,3 +1,4 @@
+import ms from 'enhanced-ms';
 import { PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { useMemo } from 'react';
 import { styled } from 'styled-components';
@@ -31,6 +32,13 @@ export function ExerciseCard({ exercise, onAddClick, onEditClick, onDeleteClick 
             <Row>
                 <Badge>{exercise.bodyPart}</Badge>
                 {exercise.muscles.map(muscle => <LighterBadge key={muscle}>{muscle}</LighterBadge>)}
+            </Row>
+
+            <Row>
+                <Badge>Sets: {exercise.sets}</Badge>
+                <Badge>Reps: {exercise.repetitions}</Badge>
+                <Badge>Rest: {ms(exercise.rest * 1000)}</Badge>
+                <Badge>Freq: {exercise.frequency}</Badge>
             </Row>
 
             <p>{exercise.description}</p>

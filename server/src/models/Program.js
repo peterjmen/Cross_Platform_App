@@ -25,26 +25,6 @@ const schema = new Schema(
             required: true,
             autopopulate: true,
         },
-
-        sets: {
-            type: Number,
-            required: true,
-        },
-
-        repetitions: {
-            type: Number,
-            required: true,
-        },
-
-        rest: {
-            type: Number,
-            required: true,
-        },
-
-        frequency: {
-            type: String,
-            required: true,
-        },
     },
     {
         timestamps: true,

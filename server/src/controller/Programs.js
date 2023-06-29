@@ -31,11 +31,11 @@ class ProgramsController extends Controller {
     /**
      * Create a brand new program.
      * @endpoint PUT `/programs`
-     * @param {import('express').Request<any, any, { name: string; description: string; exercises: string[]; sets: number; repetitions: number; rest: number; frequency: string; }>} req
+     * @param {import('express').Request<any, any, { name: string; description: string; exercises: string[]; }>} req
      * @param {import('express').Response} res
      */
     async createProgram(req, res) {
-        let { name, description, exercises: exerciseIds, sets, repetitions, rest, frequency } = req.body;
+        let { name, description, exercises: exerciseIds } = req.body;
         exerciseIds = exerciseIds?.filter((v, i, a) => a.indexOf(v) === i && isValidObjectId(v));
 
         if (isNullish(name)) return this.error(res, 400, 'Name is required');
@@ -49,22 +49,6 @@ class ProgramsController extends Controller {
         if (isNullish(exerciseIds)) return this.error(res, 400, 'Exercises are required');
         if (exerciseIds.some(id => !isValidObjectId(id)))
             return this.error(res, 400, 'Provided exercises are invalid');
-
-        if (isNullish(sets)) return this.error(res, 400, 'Sets are required');
-        if (typeof sets !== 'number' || sets < 1)
-            return this.error(res, 400, 'Sets must be a number greater than 0');
-
-        if (isNullish(repetitions)) return this.error(res, 400, 'Repetitions are required');
-        if (typeof repetitions !== 'number' || repetitions < 1)
-            return this.error(res, 400, 'Repetitions must be a number greater than 0');
-
-        if (isNullish(rest)) return this.error(res, 400, 'Rest is required');
-        if (typeof rest !== 'number' || rest < 1)
-            return this.error(res, 400, 'Rest must be a number greater than 0');
-
-        if (isNullish(frequency)) return this.error(res, 400, 'Frequency is required');
-        if (typeof frequency !== 'string' || frequency.length === 0)
-            return this.error(res, 400, 'Provided frequency is invalid');
 
         const exercises = await Exercise.find({ _id: { $in: exerciseIds } });
         if (exercises.length !== exerciseIds.length)
@@ -97,7 +81,7 @@ class ProgramsController extends Controller {
     /**
      * Update an existing program.
      * @endpoint PATCH `/programs/:id`
-     * @param {import('express').Request<{ id: string; }, any, Partial<{ name: string; description: string; exercises: string[]; sets: number; repetitions: number; rest: number; frequency: string; }>>} req
+     * @param {import('express').Request<{ id: string; }, any, Partial<{ name: string; description: string; exercises: string[]; }>>} req
      * @param {import('express').Response} res
      */
     async updateProgram(req, res) {
@@ -123,21 +107,6 @@ class ProgramsController extends Controller {
             if (exerciseIds.some(id => !isValidObjectId(id)))
                 return this.error(res, 400, 'Provided exercises are invalid');
         }
-
-        if (!isNullish(sets) && (typeof sets !== 'number' || sets < 1))
-            return this.error(res, 400, 'Sets must be a number greater than 0');
-        if (!isNullish(sets)) program.sets = sets;
-
-        if (!isNullish(repetitions) && (typeof repetitions !== 'number' || repetitions < 1))
-            return this.error(res, 400, 'Repetitions must be a number greater than 0');
-        if (!isNullish(repetitions)) program.repetitions = repetitions;
-
-        if (!isNullish(rest) && (typeof rest !== 'number' || rest < 1))
-            return this.error(res, 400, 'Rest must be a number greater than 0');
-        if (!isNullish(rest)) program.rest = rest;
-
-        if (!isNullish(frequency) && (typeof frequency !== 'string' || frequency.length === 0))
-            return this.error(res, 400, 'Provided frequency is invalid');
 
         if (!isNullish(exerciseIds)) {
             const objects = await Exercise.find({ _id: { $in: exerciseIds } });
