@@ -97,10 +97,13 @@ export function ExercisesPage() {
             isOpen={isPickerPromptOpen}
             setIsOpen={setIsPickerPromptOpen}
         />
-        <CreateExercisePrompt
-        onSuccess={handleCreateExerciseSuccess}
-        isOpen={isCreateExercisePromptOpen}
-        setIsOpen={setIsCreateExercisePromptOpen}
+            <CreateExercisePrompt
+            onSuccess={exercise => {
+                setExercises(exercises => [exercise, ...exercises]);
+                handleCreateExerciseSuccess(exercise);
+            }}
+            isOpen={isCreateExercisePromptOpen}
+            setIsOpen={setIsCreateExercisePromptOpen}
         />
     </Container>
 }
