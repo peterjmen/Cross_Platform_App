@@ -55,18 +55,6 @@ export function EditProgramPrompt({ program, onSuccess, isOpen, setIsOpen }) {
             <Label htmlFor="edit-program-description">Description</Label>
             <Textarea id="edit-program-description" type="text" {...form.register('description')} placeholder="Type description..." />
 
-            <Label htmlFor="edit-program-sets">Sets</Label>
-            <Input id="edit-program-sets" type="number" {...form.register('sets', { valueAsNumber: true })} placeholder="Type sets..." />
-
-            <Label htmlFor="edit-program-repetitions">Repetitions</Label>
-            <Input id="edit-program-repetitions" type="number" {...form.register('repetitions', { valueAsNumber: true })} placeholder="Type repetitions..." />
-
-            <Label htmlFor="edit-program-rest">Rest (Seconds)</Label>
-            <Input id="edit-program-rest" type="number" {...form.register('rest', { valueAsNumber: true })} placeholder="Type rest..." />
-
-            <Label htmlFor="edit-program-frequency">Frequency</Label>
-            <Input id="edit-program-frequency" type="text" {...form.register('frequency')} placeholder="Type frequency..." />
-
             <Button type="submit" variant="primary">Save</Button>
         </Form>
     </Dialog>

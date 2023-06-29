@@ -1,4 +1,3 @@
-import ms from 'enhanced-ms';
 import { EyeIcon, Trash2Icon } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -26,15 +25,8 @@ export function ProgramCard({ program, onDeleteClick }) {
             <Heading>{program.name}</Heading>
 
             <Row>
-                <Badge>Exercises: {program.exercises.length}</Badge>
-                <Badge>Sets: {program.sets}</Badge>
-                <Badge>Reps: {program.repetitions}</Badge>
-                <Badge>Rest: {ms(program.rest * 1000)}</Badge>
+                <Badge>{program.exercises.length} Exercises</Badge>
             </Row>
-            <Row>
-                <Badge>Frequency: {program.frequency}</Badge>
-            </Row>
-
             <p>
                 {program.description}
             </p>

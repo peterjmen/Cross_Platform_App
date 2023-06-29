@@ -15,12 +15,12 @@ const schema = new Schema(
             trim: true,
         },
 
-        bodyPart: {
+        description: {
             type: String,
             required: true,
         },
 
-        imageUrl: {
+        bodyPart: {
             type: String,
             required: true,
         },
@@ -28,11 +28,30 @@ const schema = new Schema(
         muscles: {
             type: [String],
             required: true,
-            // Ensure at least one is provided
-            validate: (v) => Array.isArray(v) && v.length > 0,
+            validate: (v) => Array.isArray(v),
         },
 
-        description: {
+        imageUrl: {
+            type: String,
+            required: true,
+        },
+
+        sets: {
+            type: Number,
+            required: true,
+        },
+
+        repetitions: {
+            type: Number,
+            required: true,
+        },
+
+        rest: {
+            type: Number,
+            required: true,
+        },
+
+        frequency: {
             type: String,
             required: true,
         },
