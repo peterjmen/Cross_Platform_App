@@ -10,6 +10,8 @@ export const Button = styled.button`
     border-radius: 50px;
     padding: 8px 40px;
     transition: background-color 0.2s;
+    white-space: nowrap;
+    text-align: center;
 
     ${({ variant }) => Button.variants[variant]}
 `;
