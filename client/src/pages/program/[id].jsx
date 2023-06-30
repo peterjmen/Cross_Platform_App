@@ -1,3 +1,4 @@
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import ms from 'enhanced-ms';
 import { XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -8,6 +9,7 @@ import { Button } from '../../components/common/button';
 import { Content, Heading, Card as _Card } from '../../components/common/card';
 import { Circle } from '../../components/common/circle';
 import { HoistedRow, Row } from '../../components/common/row';
+import { ProgramPDF } from '../../components/pdf/program';
 import { EditProgramPrompt } from '../../components/prompts/edit-program';
 import { RemoveExercisePrompt } from '../../components/prompts/remove-exercise';
 import { useApiUrl, useUserId } from '../../hooks/api';
@@ -46,11 +48,23 @@ export function ProgramPage() {
                 <p>{program.description}</p>
             </Content>
 
-            {isCreator && <Button
-                variant="primary"
-                onClick={() => setIsEditor(true)}
-                style={{ marginRight: '1rem' }}
-            >Edit</Button>}
+            <Column>
+                {isCreator && <Button
+                    variant="primary"
+                    onClick={() => setIsEditor(true)}
+                >Edit</Button>}
+
+                <PDFDownloadLink
+                    key={program}
+                    document={<ProgramPDF program={program} />}
+                    fileName={`${program.name}.pdf`}
+                >
+                    {({ loading }) => <Button
+                        variant="primary"
+                        disabled={loading}
+                    >{loading ? 'Loading...' : 'Download'}</Button>}
+                </PDFDownloadLink>
+            </Column>
         </Card>
 
         <EditProgramPrompt
@@ -127,4 +141,14 @@ const Image = styled.img`
     object-fit: cover;
     object-position: center;
     border-radius: 0.5rem;
+`;
+
+const Column = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem;
+
+    width: 10rem;
+    button { width: 100%; }
 `;

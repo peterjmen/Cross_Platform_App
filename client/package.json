@@ -8,6 +8,7 @@
         "test": "react-scripts test"
     },
     "dependencies": {
+        "@react-pdf/renderer": "^3.1.12",
         "enhanced-ms": "^2.3.0",
         "lucide-react": "^0.252.0",
         "react": "^18.2.0",
