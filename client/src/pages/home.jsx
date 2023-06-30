@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faDownload, faDumbbell } from '@fortawesome/free-solid-svg-icons';
+import { Book, Download, Dumbbell } from 'lucide-react';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgb(116, 175, 223);
+  background-color: white;
   padding: 50px;
+  gap: 30px;
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 30px;
 `;
 
 const Title = styled.h1`
   font-size: 36px;
   font-weight: bold;
-  margin-bottom: 0px;
+  margin-bottom: 20px;
   text-align: center;
 `;
 
@@ -25,6 +31,7 @@ const Description = styled.p`
   font-size: 18px;
   text-align: center;
   max-width: 570px;
+  margin-bottom: 40px;
 `;
 
 const ImageContainer = styled.div`
@@ -91,7 +98,7 @@ const FeatureIcon = styled.span`
 const FeatureTitle = styled.h2`
   font-size: 30px;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
 `;
 
 export function HomePage() {
@@ -99,27 +106,29 @@ export function HomePage() {
 
   return (
     <Container>
-      <Title>Welcome to Exercise App</Title>
-      <Description>
-        Exercise app is a leading platform for health and exercise professionals.
-        We provide a comprehensive set of tools and features to help you achieve your health and fitness goals.
-      </Description>
-
-      <ImageContainer>
-        <PreviewImage src={selectedImage} alt="Selected" />
-      </ImageContainer>
-
-      <ButtonsContainer>
-        <Button>Start your 30-day free trial</Button>
-        <Button>Learn more about</Button>
-      </ButtonsContainer>
+      <Row>
+        <div>
+          <Title>Welcome to Exercise App</Title>
+          <Description>
+            Exercise app is a leading platform for health and exercise professionals.
+            We provide a comprehensive set of tools and features to help you achieve your health and fitness goals.
+          </Description>
+          <ButtonsContainer>
+            <Button as={Link} to="/login">Get Started</Button>
+            <Button as={Link} to="/exercises">Browse Exercises</Button>
+          </ButtonsContainer>
+        </div>
+        <ImageContainer>
+          <PreviewImage src={selectedImage} alt="Selected" />
+        </ImageContainer>
+      </Row>
 
       <Features>
         <FeatureTitle>Core Features</FeatureTitle>
         <FeatureGroup>
           <FeatureBox>
             <FeatureIcon>
-              <FontAwesomeIcon icon={faBook} />
+              <Book />
             </FeatureIcon>
             <FeatureText>Browse library of exercises</FeatureText>
             <Link to="/library">Learn More</Link>
@@ -127,7 +136,7 @@ export function HomePage() {
 
           <FeatureBox>
             <FeatureIcon>
-              <FontAwesomeIcon icon={faDumbbell} />
+              <Dumbbell />
             </FeatureIcon>
             <FeatureText>Create your own exercises</FeatureText>
             <Link to="/create">Learn More</Link>
@@ -135,7 +144,7 @@ export function HomePage() {
 
           <FeatureBox>
             <FeatureIcon>
-              <FontAwesomeIcon icon={faDownload} />
+              <Download />
             </FeatureIcon>
             <FeatureText>Save a list of exercises</FeatureText>
             <Link to="/save">Learn More</Link>
