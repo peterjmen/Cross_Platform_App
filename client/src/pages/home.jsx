@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Book, Download, Dumbbell } from 'lucide-react';
+import { Button } from '../components/common/button';
 
 const Container = styled.div`
   display: flex;
@@ -52,16 +53,6 @@ const ButtonsContainer = styled.div`
   gap: 20px;
 `;
 
-const Button = styled.button`
-  padding: 10px 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
-  background-color: #333;
-  border: none;
-  border-radius: 5px;
-`;
-
 const Features = styled.div`
   display: flex;
   flex-direction: column;
@@ -102,7 +93,7 @@ const FeatureTitle = styled.h2`
 `;
 
 export function HomePage() {
-  const [selectedImage, setSelectedImage] = useState('https://fiverr-res.cloudinary.com/t_main1,q_auto,f_auto/gigs2/187440907/original/8ddb92f8cecfb95a76a4a2497a2c6b1bac155c03.jpg');
+  const [selectedImage] = useState('https://fiverr-res.cloudinary.com/t_main1,q_auto,f_auto/gigs2/187440907/original/8ddb92f8cecfb95a76a4a2497a2c6b1bac155c03.jpg');
 
   return (
     <Container>
@@ -114,8 +105,8 @@ export function HomePage() {
             We provide a comprehensive set of tools and features to help you achieve your health and fitness goals.
           </Description>
           <ButtonsContainer>
-            <Button as={Link} to="/login">Get Started</Button>
-            <Button as={Link} to="/exercises">Browse Exercises</Button>
+            <Button as={Link} to="/login"variant="primary" >Get Started</Button>
+            <Button as={Link} to="/exercises" variant="primary">Browse Exercises</Button>
           </ButtonsContainer>
         </div>
         <ImageContainer>
