@@ -76,9 +76,13 @@ class ExercisesController extends Controller {
             creator: req.user.id,
             name, description,
             bodyPart, imageUrl, muscles,
+            sets, repetitions, rest, frequency
         })
             .then(exercise => this.success(res, exercise.toJSON(), 201))
-            .catch(() => this.error(res, 500, 'Failed to create exercise'));
+            .catch(error => {
+                console.error(error);
+                this.error(res, 500, 'Failed to create exercise')
+            });
     }
 
     /**

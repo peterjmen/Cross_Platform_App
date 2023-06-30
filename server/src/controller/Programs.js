@@ -58,7 +58,6 @@ class ProgramsController extends Controller {
             creator: req.user.id,
             name, description,
             exercises: exercises.map(e => e.id),
-            sets, repetitions, rest, frequency,
         })
             .then(program => this.success(res, program.toJSON()))
             .catch(() => this.error(res, 500, 'Failed to create program'));
