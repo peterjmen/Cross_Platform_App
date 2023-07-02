@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Button } from '../components/common/button';
 import { Heading } from '../components/common/card';
@@ -16,13 +16,11 @@ export function ExercisesPage() {
     // Search exercises
 
     const form = useForm();
+    const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
     // 'null' indicates loading, empty array indicates no results
     const [exercises, setExercises] = useState(null);
-    const [isCreateExercisePromptOpen, setIsCreateExercisePromptOpen] = useState(false);
-    const handleCreateExerciseSuccess = (result) => {console.log('Exercise created:', result);};
-
 
     const searchExercises = useCallback(async ({ query }) => {
         setExercises(null);
@@ -39,6 +37,7 @@ export function ExercisesPage() {
     const id = useUserId();
     const token = useToken();
     const [programs, setPrograms] = useState(null);
+    const [isCreateExercisePromptOpen, setIsCreateExercisePromptOpen] = useState(false);
     const [selectedExercise, setSelectedExercise] = useState(null);
     const [isPickerPromptOpen, setIsPickerPromptOpen] = useState(false);
 
@@ -72,7 +71,10 @@ export function ExercisesPage() {
             <Row style={{ flexWrap: 'unset' }}>
                 <Input id="search-exercises" type="text" {...form.register('query')} placeholder="Type your search..." />
                 <Button type="submit" variant="primary">Search</Button>
-                <Button role="button" variant="primary" onClick={() => setIsCreateExercisePromptOpen(true)}>Create Exercise</Button>
+                <Button role="button" variant="primary" onClick={() => {
+                    if (!id || !token) return navigate('/login');
+                    setIsCreateExercisePromptOpen(true)
+                }}>Create Exercise</Button>
             </Row>
         </Form>
 
@@ -97,11 +99,9 @@ export function ExercisesPage() {
             isOpen={isPickerPromptOpen}
             setIsOpen={setIsPickerPromptOpen}
         />
+
         <CreateExercisePrompt
-            onSuccess={exercise => {
-                setExercises(exercises => [exercise, ...exercises]);
-                handleCreateExerciseSuccess(exercise);
-            }}
+            onSuccess={exercise => setExercises(exercises => [exercise, ...exercises])}
             isOpen={isCreateExercisePromptOpen}
             setIsOpen={setIsCreateExercisePromptOpen}
         />

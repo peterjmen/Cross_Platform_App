@@ -60,7 +60,7 @@ const Card = styled(_Card)`
 const Image = styled.img`
     height: 100%;
     aspect-ratio: 1;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 0.5rem 0 0 0.5rem;
 `;
 

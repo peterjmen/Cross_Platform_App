@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Button } from '../components/common/button';
 import { Heading } from '../components/common/card';
@@ -8,22 +8,22 @@ import { Error, Input, Label, Form as _Form } from '../components/common/form';
 import { Grid } from '../components/common/grid';
 import { Row } from '../components/common/row';
 import { ProgramCard } from '../components/program-card';
-import { useApiUrl } from '../hooks/api';
+import { useApiUrl, useToken, useUserId } from '../hooks/api';
 import { CreateProgramPrompt } from '../components/prompts/create-program';
 
 export function ProgramsPage() {
     // Search programs
 
     const form = useForm();
+    const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const id = useUserId();
+    const token = useToken();
     // 'null' indicates loading, empty array indicates no results
     const [programs, setPrograms] = useState(null);
     const [isCreateProgramPromptOpen, setIsCreateProgramPromptOpen] = useState(false);
-
-    const handleCreateProgramSuccess = (result) => {
-        console.log('Program created:', result);
-      };
 
     const searchPrograms = useCallback(async ({ query }) => {
         setPrograms(null);
@@ -53,7 +53,10 @@ export function ProgramsPage() {
             <Row style={{ flexWrap: 'unset' }}>
                 <Input id="search-programs" type="text" {...form.register('query')} placeholder="Type your search..." />
                 <Button type="submit" variant="primary">Search</Button>
-                <Button role="button" variant="primary" onClick={() => setIsCreateProgramPromptOpen(true)}>Create Program</Button>
+                <Button role="button" variant="primary" onClick={() => {
+                    if (!id || !token) return navigate('/login');
+                    setIsCreateProgramPromptOpen(true)
+                }}>Create Program</Button>
             </Row>
         </Form>
 
@@ -67,13 +70,10 @@ export function ProgramsPage() {
         </Grid>}
 
         <CreateProgramPrompt
-            onSuccess={program => {
-                setPrograms([program, ...programs]);
-                handleCreateProgramSuccess(program);
-            }}
+            onSuccess={program => setPrograms([program, ...programs])}
             isOpen={isCreateProgramPromptOpen}
             setIsOpen={setIsCreateProgramPromptOpen}
-            />
+        />
     </Container>
 }
 

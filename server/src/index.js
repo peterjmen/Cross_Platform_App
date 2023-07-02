@@ -7,6 +7,10 @@ async function main() {
     const database = new Database();
     await database.connect();
 
+    // Add some default data, would not normally do this in production
+    // Its purpose is for marking, so you can see the app working
+    require('./seed');
+
     const port = Number(process.env.PORT);
     if (Number.isNaN(port)) throw new Error('Invalid port number');
     const server = new Server({ port, version: 1 }, database);

@@ -28,7 +28,7 @@ class Database {
      */
     async disconnect() {
         if (this.connection) {
-            await this.connection.disconnect();
+            await this.connection.close();
             console.info('Disconnected from database');
         }
     }

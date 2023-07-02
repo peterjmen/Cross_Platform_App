@@ -1,8 +1,8 @@
 import { Book, Download, Dumbbell } from 'lucide-react';
-import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '../components/common/button';
+import { useToken, useUserId } from '../hooks/api';
 
 const Container = styled.div`
   display: flex;
@@ -91,7 +91,9 @@ const FeatureTitle = styled.h2`
 `;
 
 export function HomePage() {
-    const [selectedImage] = useState('https://fiverr-res.cloudinary.com/t_main1,q_auto,f_auto/gigs2/187440907/original/8ddb92f8cecfb95a76a4a2497a2c6b1bac155c03.jpg');
+    const id = useUserId();
+    const token = useToken();
+    const isLoggedIn = id && token;
 
     return <Container>
         <Row>
@@ -102,12 +104,12 @@ export function HomePage() {
                     We provide a comprehensive set of tools and features to help you achieve your health and fitness goals.
                 </Description>
                 <ButtonsContainer>
-                    <Button as={Link} to="/login" variant="primary" >Get Started</Button>
+                    <Button as={Link} to={isLoggedIn ? "/profile" : "/register"} variant="primary" >Get Started</Button>
                     <Button as={Link} to="/exercises" variant="primary">Browse Exercises</Button>
                 </ButtonsContainer>
             </div>
             <ImageContainer>
-                <PreviewImage src={selectedImage} alt="Selected" />
+                <PreviewImage src="https://fiverr-res.cloudinary.com/t_main1,q_auto,f_auto/gigs2/187440907/original/8ddb92f8cecfb95a76a4a2497a2c6b1bac155c03.jpg" alt="Selected" />
             </ImageContainer>
         </Row>
 
