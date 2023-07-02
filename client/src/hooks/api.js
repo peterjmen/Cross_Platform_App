@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 export function useApiUrl(path, query) {
     const domain = process.env.REACT_APP_API_URL;
     if (!path.startsWith('/')) path = '/' + path;
-    const url = new URL('v0' + path, domain);
+    const url = new URL('v1' + path, domain);
     if (query) Object.entries(query) //
         .forEach(([key, value]) => url.searchParams.append(key, value));
     return url;

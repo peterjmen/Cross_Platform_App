@@ -7,7 +7,9 @@ async function main() {
     const database = new Database();
     await database.connect();
 
-    const server = new Server({ port: 3_001, version: 0 }, database);
+    const port = Number(process.env.PORT);
+    if (Number.isNaN(port)) throw new Error('Invalid port number');
+    const server = new Server({ port, version: 1 }, database);
     await server.listen();
 
     process.on('SIGINT', async () => {
