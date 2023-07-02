@@ -29,7 +29,7 @@ Then install the NPM packages.
 npm install
 ```
 
-Finally create a `.env` file within the `server` directory and add the environment variables listed in the `.env.example` file in the same directory.
+Finally create a `.env` file within the `server` and `client` directorys and add the environment variables listed in the `.env.example` file in the same directorys.
 
 ### Running the Application
 
