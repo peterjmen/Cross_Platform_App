@@ -70,6 +70,7 @@ export function ProgramPickerPrompt({ exercise, programs = [], onSuccess, isOpen
 
         // Trigger the onSuccess callback and close the dialog
         if (result.success) onSuccess(exercise, result);
+        setIsOpen(false);
     }, [token, exercise, onSuccess, programs]);
 
     return <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
