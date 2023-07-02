@@ -23,7 +23,7 @@ export function EditExercisePrompt({ exercise, onSuccess, isOpen, setIsOpen }) {
     // This grabs the token from local storage
     const token = useToken();
     // Initialise the form with the exercise data, if the exercise data changes, the form will update
-    const form = useForm({ defaultValues: exercise, values: exercise });
+    const form = useForm({ defaultValues: { ...exercise, muscles: exercise?.muscles.join(', ') }, values: exercise });
 
     // This function is called when the form is submitted
     const updateExercise = useCallback(async () => {
@@ -32,8 +32,12 @@ export function EditExercisePrompt({ exercise, onSuccess, isOpen, setIsOpen }) {
             method: 'PATCH',
             // Replace all the empty strings with undefined
             body: JSON.stringify(form.getValues(), (key, value) => {
+                console.log(key, value, typeof value);
                 // If the key is muscles, split the string into an array of muscles
-                if (key === 'muscles') return value?.split(',').map(muscle => muscle.trim()) ?? [];
+                if (key === 'muscles') {
+                    if (Array.isArray(value)) return value;
+                    if (typeof value === 'string') return value?.split(',').map(muscle => muscle.trim());
+                }
                 return value || undefined;
             }),
             headers: new Headers({

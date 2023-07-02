@@ -115,7 +115,7 @@ class ExercisesController extends Controller {
         if (!exercise.creator.equals(req.user.id))
             return this.error(res, 403, 'You do not have permission to edit this exercise');
 
-        const { name, description, bodyPart, imageUrl, muscles } = req.body;
+        const { name, description, bodyPart, imageUrl, muscles, sets, repetitions, rest, frequency } = req.body;
 
         if (!isNullish(name) && (typeof name !== 'string' || name.length === 0))
             return this.error(res, 400, 'Provided name is invalid');
@@ -139,15 +139,15 @@ class ExercisesController extends Controller {
 
         if (!isNullish(sets) && (typeof sets !== 'number' || sets < 1))
             return this.error(res, 400, 'Sets must be a number greater than 0');
-        if (!isNullish(sets)) program.sets = sets;
+        if (!isNullish(sets)) exercise.sets = sets;
 
         if (!isNullish(repetitions) && (typeof repetitions !== 'number' || repetitions < 1))
             return this.error(res, 400, 'Repetitions must be a number greater than 0');
-        if (!isNullish(repetitions)) program.repetitions = repetitions;
+        if (!isNullish(repetitions)) exercise.repetitions = repetitions;
 
         if (!isNullish(rest) && (typeof rest !== 'number' || rest < 1))
             return this.error(res, 400, 'Rest must be a number greater than 0');
-        if (!isNullish(rest)) program.rest = rest;
+        if (!isNullish(rest)) exercise.rest = rest;
 
         if (!isNullish(frequency) && (typeof frequency !== 'string' || frequency.length === 0))
             return this.error(res, 400, 'Provided frequency is invalid');

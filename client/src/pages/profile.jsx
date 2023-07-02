@@ -107,7 +107,7 @@ export function ProfilePage() {
         </TabGroup>
 
         {selectedTab === 'exercises' && <Grid>
-            {exercises.map(exercise => <ExerciseCard
+            {exercises.map(exercise => exercise && <ExerciseCard
                 key={exercise.id}
                 exercise={exercise}
                 onAddClick={() => {
@@ -126,12 +126,12 @@ export function ProfilePage() {
         </Grid>}
 
         {selectedTab === 'programs' && <Grid>
-            {programs.map(program => <ProgramCard
+            {programs.map(program => program && <ProgramCard
                 key={program.id}
                 program={program}
                 onDeleteClick={() => {
                     setSelectedProgram(program);
-                    setIsDeleteExercisePromptOpen(true);
+                    setIsDeleteProgramPromptOpen(true);
                 }}
             />)}
         </Grid>}
@@ -146,7 +146,7 @@ export function ProfilePage() {
 
         <EditExercisePrompt
             exercise={selectedExercise}
-            onSuccess={(_, exercise) => setExercises(exercises => exercises.map(e => e.id === exercise.id ? exercise : e))}
+            onSuccess={exercise => setExercises(exercises => exercises.map(e => e.id === exercise.id ? exercise : e))}
             isOpen={isEditExercisePromptOpen}
             setIsOpen={setIsEditExercisePromptOpen}
         />
