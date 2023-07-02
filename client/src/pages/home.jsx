@@ -1,7 +1,7 @@
+import { Book, Download, Dumbbell } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Book, Download, Dumbbell } from 'lucide-react';
 import { Button } from '../components/common/button';
 
 const Container = styled.div`
@@ -9,7 +9,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: white;
   padding: 50px;
   gap: 30px;
 `;
@@ -79,7 +78,6 @@ const FeatureBox = styled.div`
 
 const FeatureText = styled.p`
   font-size: 18px;
-  margin-bottom: 20px;
 `;
 
 const FeatureIcon = styled.span`
@@ -93,55 +91,50 @@ const FeatureTitle = styled.h2`
 `;
 
 export function HomePage() {
-  const [selectedImage] = useState('https://fiverr-res.cloudinary.com/t_main1,q_auto,f_auto/gigs2/187440907/original/8ddb92f8cecfb95a76a4a2497a2c6b1bac155c03.jpg');
+    const [selectedImage] = useState('https://fiverr-res.cloudinary.com/t_main1,q_auto,f_auto/gigs2/187440907/original/8ddb92f8cecfb95a76a4a2497a2c6b1bac155c03.jpg');
 
-  return (
-    <Container>
-      <Row>
-        <div>
-          <Title>Welcome to Exercise App</Title>
-          <Description>
-            Exercise app is a leading platform for health and exercise professionals.
-            We provide a comprehensive set of tools and features to help you achieve your health and fitness goals.
-          </Description>
-          <ButtonsContainer>
-            <Button as={Link} to="/login"variant="primary" >Get Started</Button>
-            <Button as={Link} to="/exercises" variant="primary">Browse Exercises</Button>
-          </ButtonsContainer>
-        </div>
-        <ImageContainer>
-          <PreviewImage src={selectedImage} alt="Selected" />
-        </ImageContainer>
-      </Row>
+    return <Container>
+        <Row>
+            <div>
+                <Title>Welcome to Exercise App</Title>
+                <Description>
+                    Exercise app is a leading platform for health and exercise professionals.
+                    We provide a comprehensive set of tools and features to help you achieve your health and fitness goals.
+                </Description>
+                <ButtonsContainer>
+                    <Button as={Link} to="/login" variant="primary" >Get Started</Button>
+                    <Button as={Link} to="/exercises" variant="primary">Browse Exercises</Button>
+                </ButtonsContainer>
+            </div>
+            <ImageContainer>
+                <PreviewImage src={selectedImage} alt="Selected" />
+            </ImageContainer>
+        </Row>
 
-      <Features>
-        <FeatureTitle>Core Features</FeatureTitle>
-        <FeatureGroup>
-          <FeatureBox>
-            <FeatureIcon>
-              <Book />
-            </FeatureIcon>
-            <FeatureText>Browse library of exercises</FeatureText>
-            <Link to="/library">Learn More</Link>
-          </FeatureBox>
+        <Features>
+            <FeatureTitle>Core Features</FeatureTitle>
+            <FeatureGroup>
+                <FeatureBox>
+                    <FeatureIcon>
+                        <Book />
+                    </FeatureIcon>
+                    <FeatureText>Browse library of exercises</FeatureText>
+                </FeatureBox>
 
-          <FeatureBox>
-            <FeatureIcon>
-              <Dumbbell />
-            </FeatureIcon>
-            <FeatureText>Create your own exercises</FeatureText>
-            <Link to="/create">Learn More</Link>
-          </FeatureBox>
+                <FeatureBox>
+                    <FeatureIcon>
+                        <Dumbbell />
+                    </FeatureIcon>
+                    <FeatureText>Create your own exercises</FeatureText>
+                </FeatureBox>
 
-          <FeatureBox>
-            <FeatureIcon>
-              <Download />
-            </FeatureIcon>
-            <FeatureText>Save a list of exercises</FeatureText>
-            <Link to="/save">Learn More</Link>
-          </FeatureBox>
-        </FeatureGroup>
-      </Features>
-    </Container>
-  );
+                <FeatureBox>
+                    <FeatureIcon>
+                        <Download />
+                    </FeatureIcon>
+                    <FeatureText>Save a list of exercises</FeatureText>
+                </FeatureBox>
+            </FeatureGroup>
+        </Features>
+    </Container>;
 }
